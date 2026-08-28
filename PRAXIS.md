@@ -26,7 +26,10 @@ measure everything; it is to stop confusing a measurement with a hunch.
 - **metric** -- something extracted per trial from the run's message history
   and its response.
 - **jig** -- the code that builds cells, runs trials, and scores results for
-  one experiment set.
+  one experiment set. Set-branch-local, and specific to that set's subject.
+- **harness** -- the reusable machinery a jig is built on, released from
+  [soliplex/lab_harness](https://github.com/soliplex/lab_harness) as the
+  `soliplex-lab-harness` package.
 
 ## Axis kinds
 
@@ -52,6 +55,7 @@ a jig more complicated than it needs to be.
 | kind | naming | merges | lifetime |
 | --- | --- | --- | --- |
 | praxis | `main` | PRs change praxis docs only | forever |
+| praxis work | `praxis/<topic>` | merges into `main` | delete after merge |
 | experiment set | `set/<name>` | never merged to `main` | archival |
 | jig work | `jig/<set>/<topic>` | merges into `set/<name>` | delete after merge |
 | experiment | `exp/<set>/<slug>` | never merged anywhere | archival |
@@ -77,8 +81,25 @@ the axes change; that is what experiments within a set are for.
     git switch main
     git switch -c set/<name>
 
-Commit the jig. Keep the generic harness a **pinned dependency**, not a copy;
-otherwise set branches quietly fork it.
+Commit the jig.
+
+### Jig vs. harness
+
+A jig is specific to one experiment set: it knows what a cell looks like for
+*this* subject, which preconditions to assert, and how to score *these*
+metrics. It lives on the set branch and it may accrete.
+
+The reusable machinery underneath it -- the span collector, the trial driver,
+worktree lifecycle for code axes, config overlays, the scorer framework,
+export -- is **not** a jig. It is released from
+[soliplex/lab_harness](https://github.com/soliplex/lab_harness) as the
+`soliplex-lab-harness` package, and a jig **depends on a pinned version** of
+it rather than vendoring a copy. Otherwise every set branch quietly forks the
+harness, and two experiments a year apart are no longer comparable because
+the thing that measured them drifted.
+
+Record the pinned version on the experiment issue. A finding is only
+reproducible if the measuring apparatus is identified too.
 
 ## Running an experiment
 
