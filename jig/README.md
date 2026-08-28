@@ -23,7 +23,7 @@ release, by holding 0.77.2 with 0.78.1's `SKILL.md` overlaid.
 uv sync
 uv run python -m room_behavior build  <work>            # install, verify
 uv run python -m room_behavior run    <work> --trials 1 # smoke turn
-uv run python -m room_behavior verify <work>            # assert assumptions
+uv run python -m room_behavior verify-assumptions <work>
 uv run python -m room_behavior run    <work> --trials 20
 uv run python -m room_behavior report <work>
 ```
@@ -77,7 +77,7 @@ the table looked plausible. So the assumptions are asserted, not assumed.
   `uv --directory` so a *resolution* failure is caught and not merely a
   missing module -- how a uv project named after its own dependency presents
 
-`verify` asserts what only a recorded turn can show:
+`verify-assumptions` asserts what only a recorded turn can show:
 
 - the room config loads under this soliplex version and a turn completes
 - deferral engages or does not, per the arm's `expects_deferral`. It is
@@ -85,7 +85,7 @@ the table looked plausible. So the assumptions are asserted, not assumed.
   routing capabilities, while 0.78.x defers only the filesystem skill, which
   this task gives the model no reason to load
 
-`verify` never drives a turn; it reads what `run` recorded.
+`verify-assumptions` never drives a turn; it reads what `run` recorded.
 
 ## Metrics
 

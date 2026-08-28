@@ -95,7 +95,7 @@ def verify_smoke_turn(
     return out
 
 
-def verify(work: pathlib.Path, chosen) -> list[Check]:
+def verify_all(work: pathlib.Path, chosen) -> list[Check]:
     checks: list[Check] = []
     for cell in chosen:
         checks.extend(verify_smoke_turn(cell, work))

@@ -174,7 +174,7 @@ def build_environment(
     # overlay says otherwise -- so an arm cannot silently be the wrong arm.
     # This is the only check that runs here: it needs nothing but the
     # environment, so it cannot be skipped. The checks that need a built
-    # cell, or a recorded turn, live in 'verify'.
+    # cell, or a recorded turn, live in 'verify_assumptions'.
     environs.verify_install(environment)
     return environment
 

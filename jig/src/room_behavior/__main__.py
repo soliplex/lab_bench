@@ -2,7 +2,7 @@
 
     python -m room_behavior build   <work> [--trials N]
     python -m room_behavior run     <work> [--cells a,b]
-    python -m room_behavior verify  <work> [--cells a,b]
+    python -m room_behavior verify-assumptions <work> [--cells a,b]
     python -m room_behavior report  <work>
 
 The intended order spends no turn twice:
@@ -31,7 +31,7 @@ import sys
 from . import build as build_module
 from . import cells as cells_module
 from . import report as report_module
-from . import verify as verify_module
+from . import verify_assumptions
 from .fixture import write_fixture
 
 
@@ -82,8 +82,10 @@ def do_run(
     return 1 if failures else 0
 
 
-def do_verify(work: pathlib.Path, names: str | None) -> int:
-    checks = verify_module.verify(work, selected(names))
+def do_verify_assumptions(
+    work: pathlib.Path, names: str | None
+) -> int:
+    checks = verify_assumptions.verify_all(work, selected(names))
     for check in checks:
         print(check)
     failed = [check for check in checks if not check.ok]
@@ -104,7 +106,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="room_behavior")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    for name in ("build", "run", "verify", "report"):
+    for name in ("build", "run", "verify-assumptions", "report"):
         child = sub.add_parser(name)
         child.add_argument("work", type=pathlib.Path)
         if name != "report":
@@ -120,8 +122,8 @@ def main(argv: list[str] | None = None) -> int:
         return do_build(work, args.trials or 20, args.cells)
     if args.command == "run":
         return do_run(work, args.cells, args.trials)
-    if args.command == "verify":
-        return do_verify(work, args.cells)
+    if args.command == "verify-assumptions":
+        return do_verify_assumptions(work, args.cells)
     return do_report(work)
 
 
