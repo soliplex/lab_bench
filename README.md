@@ -8,6 +8,16 @@ it is deliberately separate from any repository that does. Its purpose is
 reproducibility: an experiment run six months ago should still be findable,
 re-runnable, and readable.
 
+## Companion repository
+
+[soliplex/lab_harness](https://github.com/soliplex/lab_harness) holds the
+reusable machinery -- the `soliplex-lab-harness` package. It is ordinary
+released software with an ordinary branch model.
+
+This repository holds only the experiment-specific parts: the jigs built on
+that harness, and the results. A jig depends on a pinned harness version; it
+never vendors one.
+
 ## The branch model
 
 | branch | holds | merges? |

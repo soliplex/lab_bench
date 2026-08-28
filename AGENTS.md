@@ -26,7 +26,8 @@ Check first:
 
 | you are on | you may | you may not |
 | --- | --- | --- |
-| `main` | edit praxis docs; open a PR from a branch off `main` | commit experiment code, jigs, or data |
+| `main` | edit praxis docs on a `praxis/<topic>` branch, then PR to `main` | commit experiment code, jigs, or data |
+| `praxis/<topic>` | commit praxis-doc changes; PR into `main` | commit experiment code, jigs, or data |
 | `set/<name>` | read; branch to `jig/...` for changes | commit directly; open a PR to `main` |
 | `jig/<set>/<topic>` | commit jig changes; PR **into** the `set/` branch | PR to `main` |
 | `exp/<set>/<slug>` | commit results and experiment-local code directly | open a PR anywhere |
