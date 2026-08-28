@@ -1,0 +1,117 @@
+name: Experiment
+description: Record and track one measurement experiment
+title: "[exp] "
+labels: ["experiment"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue per experiment. Findings go in comments on this issue as
+        runs complete; result data is committed to the `exp/` branch.
+
+        Add a `set:<name>` label so this issue shows up in that set's
+        listing.
+  - type: input
+    id: set-branch
+    attributes:
+      label: Experiment set branch
+      description: The `set/<name>` branch this experiment starts from.
+      placeholder: set/soliplex-room-behavior
+    validations:
+      required: true
+  - type: input
+    id: exp-branch
+    attributes:
+      label: Experiment branch
+      description: The `exp/<set>/<slug>` branch holding this experiment.
+      placeholder: exp/soliplex-room-behavior/1319-tool-naming
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: >
+        What is being claimed, in a form that a measurement could contradict.
+    validations:
+      required: true
+  - type: textarea
+    id: axes
+    attributes:
+      label: Axes and cells
+      description: >
+        Each axis, its kind (code / configuration / task), its values, and
+        the resulting cell list.
+      placeholder: |
+        code axis (2 refs): v0.77.2, v0.78.1
+        model axis (2): gemma4-26b, <other>
+        -> 4 cells
+    validations:
+      required: true
+  - type: input
+    id: trials
+    attributes:
+      label: N per cell
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs under test
+      description: >
+        For each code-axis value, the exact ref (tag or commit sha). Omit if
+        there is no code axis.
+  - type: textarea
+    id: models
+    attributes:
+      label: Model endpoints and ids
+      description: >
+        Base URL and the exact model id as served, per model-axis value.
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: Task prompt (verbatim)
+      description: Copy it exactly. Paraphrase makes the run unreproducible.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Fixture
+      description: >
+        Generator path, seed, and the expected value the scorer checks for.
+      placeholder: |
+        gen: fixtures/orders.py  seed: 1319  rows: 60
+        expected Southeast total: 40935.89
+    validations:
+      required: true
+  - type: input
+    id: jig
+    attributes:
+      label: Jig / harness version
+      description: Commit sha on the set branch, plus any pinned harness version.
+    validations:
+      required: true
+  - type: dropdown
+    id: publishability
+    attributes:
+      label: Publishability
+      description: >
+        This repository is PUBLIC. Confirm nothing customer-derived is
+        involved. If any arm needs private material, that arm does not belong
+        here.
+      options:
+        - "Public: no customer-derived material in any arm"
+        - "Mixed: some arms excluded from this bench (say which below)"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: >
+        Preconditions verified before running, arms deliberately excluded,
+        known rig artifacts.
