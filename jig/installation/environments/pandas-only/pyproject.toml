@@ -1,0 +1,11 @@
+# Named 'pandas-only', not 'pandas': a uv project that shares a name with
+# one of its own dependencies depends on itself, the resolution is
+# unsatisfiable, and 'uv sync' leaves the dependency uninstalled while
+# exiting successfully enough to look fine.
+[project]
+name = "pandas-only"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+]

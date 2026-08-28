@@ -1,0 +1,7 @@
+# Intentionally empty.
+#
+# This experiment set uses no RAG, but 'haiku_rag_config_file' defaults to
+# './haiku.rag.yaml' with no null escape, and anything touching
+# 'InstallationConfig.haiku_rag_config' -- 'soliplex-cli audit' among them --
+# opens it. An empty document loads as '{}' and haiku-rag fills in its own
+# defaults.
