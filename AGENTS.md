@@ -35,6 +35,41 @@ Check first:
 A branch off a `set/` branch is mergeable only if it is named `jig/...`. An
 `exp/...` branch is never the basis for a pull request.
 
+## One worktree per branch
+
+Do not `git switch` in the `main` worktree. It stays on `main`. Every other
+branch of open work gets **its own worktree**, named for the branch with the
+slashes flattened:
+
+    lab_bench/main                        main
+    lab_bench/set-soliplex-room-behavior  set/soliplex-room-behavior
+    lab_bench/jig-harness-0.1.1           jig/soliplex-room-behavior/harness-0.1.1
+    lab_bench/exp-defer-loading-3x2       exp/soliplex-room-behavior/defer-loading-3x2
+
+Create one with, from any existing worktree:
+
+    git worktree add ../<flattened-name> <branch>
+    git worktree add ../<flattened-name> -b <new-branch> main
+
+Run `git worktree list` before assuming which tree you are in.
+
+**Why.** These branches hold mutually incompatible content -- praxis
+documents, a jig, results -- so moving one working tree between them churns
+untracked files and invites committing a file to the wrong branch. That has
+already happened once: an `experiment/` directory intended for an `exp/`
+branch landed in a `jig/` commit and had to be amended out.
+
+### Tidying up
+
+- When a transient branch (`praxis/`, `jig/`) is deleted on `origin` after
+  its pull request merges, delete its worktree.
+- When an experiment's issue is closed, delete the experiment worktree **and
+  the local branch**. The branch on `origin` is the archive, and it is
+  protected against deletion; a local copy is just a second thing to keep
+  straight.
+
+Neither cleanup touches the archive.
+
 ## Running an experiment
 
 Before spending trials, print the state the hypothesis depends on and confirm
