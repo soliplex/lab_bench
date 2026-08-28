@@ -122,7 +122,9 @@ def build_environment(
     )
     # Raises unless the install matches its own RECORD except where an
     # overlay says otherwise -- so an arm cannot silently be the wrong arm.
-    # Needs no trials, so it belongs here where it cannot be skipped.
+    # This is the only check that runs here: it needs nothing but the
+    # environment, so it cannot be skipped. The checks that need a built
+    # cell, or a recorded turn, live in 'verify'.
     environs.verify_install(environment)
     return environment
 

@@ -1,16 +1,23 @@
-"""Check the assumptions a run depends on, before spending the full N.
-
-Two kinds:
-
-* things checkable without a turn -- an install matching its own RECORD, a
-  sandbox environment that can import what it declares. These run inside
-  ``build``, where they cannot be skipped.
-* things only a turn can establish -- that the room config loads under this
-  soliplex version at all, and that deferral engages where the arm says it
-  must. These read the results of a smoke turn, which is kept.
+"""Assert the assumptions a run depends on, before spending the full N.
 
 Every defect found in this jig so far was silent: the run completed and the
-table looked plausible. That is why these are assertions rather than notes.
+table looked plausible. So these are assertions, not notes.
+
+**Nothing in this module drives a turn.** ``verify_smoke_turn`` reads a turn
+that ``run`` has already recorded.
+
+Where the checks actually live:
+
+* ``build`` calls ``environs.verify_install`` on each code-axis environment
+  as it creates it -- the RECORD comparison. It needs no turn, and living
+  there means it cannot be skipped.
+* this module holds the two the ``verify`` subcommand runs:
+  ``verify_sandbox_imports``, which also needs no turn, and
+  ``verify_smoke_turn``, which does need one to have been recorded.
+
+So the split between the two homes is not "needs a turn" -- it is whether
+the check can run before any cell exists. ``verify_sandbox_imports`` needs a
+built cell, which ``build`` only finishes at its very end.
 """
 
 from __future__ import annotations
@@ -45,7 +52,7 @@ class Check:
         return f"  {mark} {self.cell}: {self.what}{tail}"
 
 
-def sandbox_imports(
+def verify_sandbox_imports(
     cell: cells_module.Cell, work: pathlib.Path, runner
 ) -> list[Check]:
     """Each sandbox environment must import what it declares.
@@ -89,7 +96,7 @@ def sandbox_imports(
     return out
 
 
-def smoke_turn(
+def verify_smoke_turn(
     cell: cells_module.Cell, work: pathlib.Path
 ) -> list[Check]:
     """What only a turn can establish, read from the kept smoke result."""
@@ -137,8 +144,8 @@ def smoke_turn(
 def verify(work: pathlib.Path, chosen, runner) -> list[Check]:
     checks: list[Check] = []
     for cell in chosen:
-        checks.extend(sandbox_imports(cell, work, runner))
-        checks.extend(smoke_turn(cell, work))
+        checks.extend(verify_sandbox_imports(cell, work, runner))
+        checks.extend(verify_smoke_turn(cell, work))
     return checks
 
 

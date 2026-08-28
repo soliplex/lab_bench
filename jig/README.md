@@ -69,21 +69,25 @@ installation will hit again:
 Every defect found in this jig so far was **silent**: the run completed and
 the table looked plausible. So the assumptions are asserted, not assumed.
 
-`build` checks, needing no turn:
+`build` checks, as each environment is created:
 
-- each code-axis environment still matches its own `RECORD`, except where an
-  overlay declares otherwise (`verify_install`)
+- the code-axis environment still matches its own `RECORD`, except where an
+  overlay declares otherwise (`verify_install`). It needs nothing but the
+  environment, so it runs where it cannot be skipped.
 
-`verify` checks, reading the smoke turn:
+`verify` checks, once cells exist:
 
 - each sandbox environment imports what it declares, via `uv --directory`,
   which catches a *resolution* failure and not just a missing module -- how a
-  uv project named after its own dependency presents
+  uv project named after its own dependency presents. Needs a built cell,
+  not a turn.
 - the room config loads under this soliplex version and a turn completes
 - deferral engages or does not, per the arm's `expects_deferral`. It is
   arm-specific: 0.77.x defers the sandbox itself once the room has two
   routing capabilities, while 0.78.x defers only the filesystem skill, which
   this task gives the model no reason to load
+
+The last two read a turn that `run` recorded; `verify` never drives one.
 
 ## Metrics
 
