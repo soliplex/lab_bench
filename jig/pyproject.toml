@@ -4,7 +4,7 @@ version = "0.1"
 description = "Jig for the soliplex-room-behavior experiment set"
 requires-python = ">=3.13"
 dependencies = [
-    "soliplex-lab-harness @ git+https://github.com/soliplex/lab_harness@v0.1",
+    "soliplex-lab-harness @ git+https://github.com/soliplex/lab_harness@v0.1.1",
 ]
 
 [dependency-groups]

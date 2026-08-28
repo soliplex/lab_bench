@@ -25,7 +25,7 @@ from . import cells as cells_module
 
 HARNESS_PIN = (
     "soliplex-lab-harness @ "
-    "git+https://github.com/soliplex/lab_harness@v0.1"
+    "git+https://github.com/soliplex/lab_harness@v0.1.1"
 )
 PYTHON = "3.13"
 
