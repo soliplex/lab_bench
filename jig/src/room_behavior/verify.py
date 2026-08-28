@@ -1,23 +1,21 @@
-"""Assert the assumptions a run depends on, before spending the full N.
+"""Assert what only a recorded turn can establish.
 
 Every defect found in this jig so far was silent: the run completed and the
 table looked plausible. So these are assertions, not notes.
 
-**Nothing in this module drives a turn.** ``verify_smoke_turn`` reads a turn
-that ``run`` has already recorded.
+**Nothing here drives a turn.** ``verify_smoke_turn`` reads a turn that
+``run`` has already recorded.
 
-Where the checks actually live:
+The checks that need no turn live with whatever they check, on the principle
+of make-the-thing-then-verify-the-thing:
 
-* ``build`` calls ``environs.verify_install`` on each code-axis environment
-  as it creates it -- the RECORD comparison. It needs no turn, and living
-  there means it cannot be skipped.
-* this module holds the two the ``verify`` subcommand runs:
-  ``verify_sandbox_imports``, which also needs no turn, and
-  ``verify_smoke_turn``, which does need one to have been recorded.
+* ``build_environment`` compares each code-axis install against its own
+  RECORD (``environs.verify_install``)
+* ``build_sandbox_environments`` checks each sandbox environment can import
+  what it declares
 
-So the split between the two homes is not "needs a turn" -- it is whether
-the check can run before any cell exists. ``verify_sandbox_imports`` needs a
-built cell, which ``build`` only finishes at its very end.
+Both raise during ``build``, so they cannot be skipped and cannot be
+mistaken for a measurement failure.
 """
 
 from __future__ import annotations
@@ -50,50 +48,6 @@ class Check:
         mark = "ok  " if self.ok else "FAIL"
         tail = f" -- {self.detail}" if self.detail else ""
         return f"  {mark} {self.cell}: {self.what}{tail}"
-
-
-def verify_sandbox_imports(
-    cell: cells_module.Cell, work: pathlib.Path, runner
-) -> list[Check]:
-    """Each sandbox environment must import what it declares.
-
-    Uses ``uv --directory``, so a *resolution* failure is caught and not
-    just a missing module -- which is how a project named after its own
-    dependency presents.
-    """
-    out = []
-    root = work / "cells" / cell.name / "environments"
-    for name, module in sorted(cells_module.SANDBOX_IMPORTS.items()):
-        directory = root / name
-        try:
-            runner(
-                [
-                    "uv",
-                    "--directory",
-                    str(directory),
-                    "run",
-                    "python",
-                    "-c",
-                    f"import {module}",
-                ],
-                None,
-            )
-        except Exception as exc:  # noqa: BLE001 -- reported, not handled
-            out.append(
-                Check(
-                    cell.name,
-                    f"sandbox {name!r} imports {module!r}",
-                    False,
-                    str(exc).splitlines()[0][:120],
-                )
-            )
-        else:
-            out.append(
-                Check(
-                    cell.name, f"sandbox {name!r} imports {module!r}", True
-                )
-            )
-    return out
 
 
 def verify_smoke_turn(
@@ -141,10 +95,9 @@ def verify_smoke_turn(
     return out
 
 
-def verify(work: pathlib.Path, chosen, runner) -> list[Check]:
+def verify(work: pathlib.Path, chosen) -> list[Check]:
     checks: list[Check] = []
     for cell in chosen:
-        checks.extend(verify_sandbox_imports(cell, work, runner))
         checks.extend(verify_smoke_turn(cell, work))
     return checks
 

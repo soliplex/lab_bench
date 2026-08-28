@@ -83,9 +83,7 @@ def do_run(
 
 
 def do_verify(work: pathlib.Path, names: str | None) -> int:
-    from soliplex_lab_harness import environs
-
-    checks = verify_module.verify(work, selected(names), environs.run)
+    checks = verify_module.verify(work, selected(names))
     for check in checks:
         print(check)
     failed = [check for check in checks if not check.ok]

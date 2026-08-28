@@ -23,6 +23,26 @@ from soliplex_lab_harness import environs
 
 from . import cells as cells_module
 
+
+class SandboxEnvironmentUnusable(Exception):
+    """A sandbox environment cannot import what it declares.
+
+    Which means the jig built it wrong, not that the model did anything.
+    A uv project sharing a name with one of its dependencies resolves to
+    nothing while 'uv sync' still exits cleanly, so this is the failure
+    that looks most like success.
+    """
+
+    def __init__(self, name: str, module: str, detail: str):
+        self.name = name
+        self.module = module
+        self.detail = detail
+        super().__init__(
+            f"sandbox environment {name!r} cannot import {module!r}: "
+            f"{detail}"
+        )
+
+
 HARNESS_PIN = (
     "soliplex-lab-harness @ "
     "git+https://github.com/soliplex/lab_harness@v0.2"
@@ -54,18 +74,48 @@ def build_sandbox_environments(
     destination: pathlib.Path,
     runner: environs.Runner = environs.run,
 ) -> list[str]:
-    """Copy each sandbox environment and 'uv sync' it.
+    """Copy each sandbox environment, 'uv sync' it, then check it works.
 
-    Verifies afterwards that the environment is not empty of its own
-    dependencies: a uv project sharing a name with one of its dependencies
-    resolves to nothing while still exiting cleanly.
+    Make the thing, then verify the thing -- the same shape as building a
+    code-axis environment and then comparing it against its RECORD.
     """
     shutil.copytree(source, destination)
     built = []
     for directory in sorted(p for p in destination.iterdir() if p.is_dir()):
         runner(["uv", "sync"], directory)
         built.append(directory.name)
+    verify_sandbox_imports(destination, runner)
     return built
+
+
+def verify_sandbox_imports(
+    root: pathlib.Path, runner: environs.Runner = environs.run
+) -> None:
+    """Each sandbox environment must import what it declares.
+
+    Run through 'uv --directory' rather than the environment's own
+    interpreter, so a *resolution* failure is caught and not merely a
+    missing module -- which is how a project named after its own dependency
+    presents.
+    """
+    for name, module in sorted(cells_module.SANDBOX_IMPORTS.items()):
+        try:
+            runner(
+                [
+                    "uv",
+                    "--directory",
+                    str(root / name),
+                    "run",
+                    "python",
+                    "-c",
+                    f"import {module}",
+                ],
+                None,
+            )
+        except environs.EnvironmentBuildError as exc:
+            raise SandboxEnvironmentUnusable(
+                name, module, str(exc).splitlines()[-1][:160]
+            ) from exc
 
 
 def overlay_for(
