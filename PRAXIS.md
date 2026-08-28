@@ -153,6 +153,60 @@ the thing that measured them drifted.
 Record the pinned version on the experiment issue. A finding is only
 reproducible if the measuring apparatus is identified too.
 
+## Issues
+
+The issue tracker is the index (see [README.md](README.md)), so it has to
+stay in step with the branches.
+
+### Labels mirror the branch kinds
+
+| label | for work on | branch prefix |
+| --- | --- | --- |
+| `exp:<set>` | one experiment | `exp/<set>/<slug>` |
+| `jig:<set>` | that set's jig | `jig/<set>/<topic>` |
+| `set:<set>` | the set itself -- its scope, its retirement | `set/<set>` |
+| `praxis` | these documents | `praxis/<topic>` |
+
+So a label reads as its branch prefix with the first `/` replaced by `:`,
+and the label query for a set separates experiments run from work on the
+apparatus.
+
+### An issue needs to exist before the pull request
+
+A bug, a new feature, or a guardrail gets an issue first, so the design can
+be reacted to before an implementation arrives for review. Pure
+housekeeping -- a version pin, a typo -- is the exception.
+
+Keep the artifacts from repeating each other:
+
+- the **issue** states the problem, and does not re-litigate the choices
+  that led there
+- the **pull request** mostly links to the issue
+- the **commit message** is terse, pointing at the issue and the pull
+  request for context
+
+Reviewer fatigue is the reason, and it is not hypothetical: three tellings
+of the same argument means checking that they agree, and the usual outcomes
+are that something is overlooked or the whole thing stalls.
+
+### Close the issue by hand
+
+A `jig/` or `exp/` pull request targets a `set/` branch, never the default
+branch. GitHub only forms a development link -- and only auto-closes -- for
+pull requests into the default branch, so **nothing will close the issue for
+you**. Close it when you merge.
+
+Keep the `Closes #N` line in the pull request body anyway. It records the
+intent, and it costs nothing. Two things about it are worth knowing, both
+learned by getting them wrong:
+
+- the keyword has to be in the pull request **body or title**; in a commit
+  message alone it creates no link
+- `Closes: #N` with a colon works as well as `Closes #N` without
+
+Only `praxis/` pull requests target the default branch, so those are the
+only ones where the automation does anything.
+
 ## Running an experiment
 
 1. **Open an issue** from the experiment template. It records the shared
