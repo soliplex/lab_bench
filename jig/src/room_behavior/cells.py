@@ -35,6 +35,11 @@ ROOM_TOOLS = frozenset(
 #: Environments the sandbox offers. Anything else was guessed.
 SANDBOX_ENVIRONMENTS = frozenset({"bare", "pandas-only", None})
 
+#: Sandbox environment -> a module it must be able to import. A uv project
+#: sharing a name with one of its dependencies resolves to nothing while
+#: 'uv sync' still exits cleanly, so this is checked rather than assumed.
+SANDBOX_IMPORTS = {"pandas-only": "pandas"}
+
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Model:
@@ -45,12 +50,22 @@ class Model:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Arm:
-    """One code-axis value: a version, plus any overlay it needs."""
+    """One code-axis value: a version, plus any overlay it needs.
+
+    ``expects_deferral`` says whether a turn on this arm must call
+    ``load_capability``. It is arm-specific, not a blanket rule: 0.77.x
+    defers every routing capability once a room has more than one, so the
+    sandbox itself is deferred there, while 0.78.x defers only the
+    filesystem skill -- which this task gives the model no reason to load.
+    Verification asserts against this, so the 0.78 behavior is not reported
+    as a failure.
+    """
 
     name: str
     version: str
     overlay_from: str | None = None
     note: str = ""
+    expects_deferral: bool = False
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
@@ -78,14 +93,25 @@ MODELS = (
 )
 
 ARMS = (
-    Arm(name="v077", version="0.77.2", note="defer-all policy"),
+    Arm(
+        name="v077",
+        version="0.77.2",
+        note="defer-all policy",
+        expects_deferral=True,
+    ),
     Arm(
         name="v077skill",
         version="0.77.2",
         overlay_from="0.78.1",
         note="defer-all policy, hardened SKILL.md",
+        expects_deferral=True,
     ),
-    Arm(name="v078", version="0.78.1", note="per-skill defer_loading"),
+    Arm(
+        name="v078",
+        version="0.78.1",
+        note="per-skill defer_loading",
+        expects_deferral=False,
+    ),
 )
 
 #: Where the sandbox skill's instructions live inside an install.

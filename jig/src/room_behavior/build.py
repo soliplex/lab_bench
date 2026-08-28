@@ -111,7 +111,7 @@ def build_environment(
     work: pathlib.Path,
     runner: environs.Runner = environs.run,
 ) -> environs.Environment:
-    return environs.build(
+    environment = environs.build(
         environs.Pin(name=arm.name, version=arm.version),
         work / "envs" / arm.name,
         extra_requirements=(HARNESS_PIN,),
@@ -120,6 +120,11 @@ def build_environment(
         recreate=True,
         runner=runner,
     )
+    # Raises unless the install matches its own RECORD except where an
+    # overlay says otherwise -- so an arm cannot silently be the wrong arm.
+    # Needs no trials, so it belongs here where it cannot be skipped.
+    environs.verify_install(environment)
+    return environment
 
 
 def build_cell(
