@@ -1,0 +1,57 @@
+# Minimal installation for the 'soliplex-room-behavior' experiment set.
+#
+# Rendered per cell: @@BASE_URL@@ and @@MODEL@@ are substituted with the
+# model-axis value. Everything a measurement does not need is absent --
+# there is no RAG, no filesystem skills, no OIDC, no MCP, and one agent
+# config -- so a cell never has to satisfy config the experiment ignores.
+id: "room-behavior"
+server_name: "Room behavior"
+server_description: "Minimal installation for measurement experiments."
+
+agent_configs:
+  - id: "chat"
+    provider_type: "openai"
+    provider_base_url: "@@BASE_URL@@"
+    model_name: "@@MODEL@@"
+
+room_paths:
+  - "./rooms/workbench"
+
+# Each of these otherwise defaults to a directory that must exist
+# ('./oidc', './completions', './quizzes', './skills'). A single null
+# entry is the documented way to have none: path resolution filters
+# None out, leaving an empty list.
+oidc_paths:
+  - null
+completion_paths:
+  - null
+quizzes_paths:
+  - null
+
+# One filesystem skill, which matters more than it looks. soliplex
+# 0.77.x defers every routing capability when a room has more than
+# one; with a single skill the deferral policy never engages and the
+# code axis would measure nothing. Two routing capabilities -- this
+# skill and the sandbox -- make the policy observable.
+filesystem_skills_paths:
+  - "./skills"
+
+skill_configs:
+  - skill_name: "reporting"
+    kind: "filesystem"
+
+rooms_upload_path: ../uploads/rooms
+threads_upload_path: ../uploads/threads
+
+sandbox_config:
+    environments_path: ../environments
+    workdirs_path: ../workdirs
+    transcripts_path: ../transcripts
+
+thread_persistence_dburi:
+  sync: "sqlite:///db/thread_persistence.sqlite"
+  async: "sqlite+aiosqlite:///db/thread_persistence.sqlite"
+
+authorization_dburi:
+  sync: "sqlite:///db/authorization.sqlite"
+  async: "sqlite+aiosqlite:///db/authorization.sqlite"

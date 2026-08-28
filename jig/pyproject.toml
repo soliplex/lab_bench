@@ -1,0 +1,30 @@
+[project]
+name = "room-behavior-jig"
+version = "0.1"
+description = "Jig for the soliplex-room-behavior experiment set"
+requires-python = ">=3.13"
+dependencies = [
+    "soliplex-lab-harness @ git+https://github.com/soliplex/lab_harness@v0.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.1,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "room_behavior"
+
+[tool.ruff]
+line-length = 79
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["F", "E", "B", "UP", "I", "PD", "TRY", "PT"]
+
+[tool.ruff.lint.isort]
+force-single-line = true

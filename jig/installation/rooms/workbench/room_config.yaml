@@ -1,0 +1,20 @@
+# The room under test. Owned by this experiment set, deliberately not
+# borrowed from soliplex's 'example/' tree -- which does not ship in the
+# wheel anyway, and would change under us if it were edited upstream.
+id: "workbench"
+name: "Workbench"
+description: "Answers questions about files with sandboxed code execution."
+
+agent:
+  template_id: "chat"
+  system_prompt: "./prompt.txt"
+
+skills:
+  # 'reporting' is a filesystem skill and defers by default on 0.78;
+  # on 0.77 the room-wide heuristic defers this *and* the sandbox.
+  installation_skill_names:
+    - "reporting"
+  skill_configs:
+    - kind: "bwrap_sandbox"
+
+allow_mcp: false
