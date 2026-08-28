@@ -9,8 +9,9 @@ body:
         One issue per experiment. Findings go in comments on this issue as
         runs complete; result data is committed to the `exp/` branch.
 
-        Add a `set:<name>` label so this issue shows up in that set's
-        listing.
+        Add an `exp:<set>` label so this issue shows up in that set's
+        listing. It will not auto-close: an experiment branch never
+        merges, so close it by hand when the findings are recorded.
   - type: input
     id: set-branch
     attributes:

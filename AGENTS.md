@@ -70,6 +70,26 @@ branch landed in a `jig/` commit and had to be amended out.
 
 Neither cleanup touches the archive.
 
+## Issues
+
+**An issue comes before the pull request** for a bug, a feature, or a
+guardrail -- so the design can be reacted to before an implementation lands
+for review. Housekeeping (a version pin, a typo) is the exception. Do not
+write the implementation and the issue in the same breath.
+
+**Do not repeat the argument three times.** The issue states the problem;
+the pull request mostly links to it; the commit message is terse. Findings,
+tables, and evidence belong in one place, not in all three.
+
+**Label to match the branch:** `exp:<set>`, `jig:<set>`, `set:<set>`,
+`praxis`. A label is its branch prefix with the first `/` replaced by `:`.
+
+**Close the issue by hand.** A `jig/` or `exp/` pull request targets a
+`set/` branch, and GitHub only auto-closes for pull requests into the
+default branch. Nothing will close it for you. Keep `Closes #N` in the pull
+request body regardless -- it records intent -- and note that the keyword
+does nothing in a commit message alone.
+
 ## Running an experiment
 
 Before spending trials, print the state the hypothesis depends on and confirm
