@@ -52,20 +52,26 @@ class Model:
 class Arm:
     """One code-axis value: a version, plus any overlay it needs.
 
-    ``expects_deferral`` says whether a turn on this arm must call
-    ``load_capability``. It is arm-specific, not a blanket rule: 0.77.x
-    defers every routing capability once a room has more than one, so the
-    sandbox itself is deferred there, while 0.78.x defers only the
-    filesystem skill -- which this task gives the model no reason to load.
-    Verification asserts against this, so the 0.78 behavior is not reported
-    as a failure.
+    ``expects_deferral`` is about the arm's **policy**, not the model's
+    choice:
+
+    * ``True`` -- the sandbox itself is deferred, so a turn cannot proceed
+      without ``load_capability``. 0.77.x defers every routing capability
+      once a room has more than one.
+    * ``None`` -- do not check. 0.78.x leaves the sandbox eager and defers
+      only the filesystem skill, so loading it is up to the model: the
+      ``reporting`` skill asks to be loaded before a currency figure is
+      reported, and this task asks for one. Asserting either way there would
+      assert a model choice.
+    * ``False`` -- assert that nothing was loaded. No arm here needs it, but
+      it stays expressible.
     """
 
     name: str
     version: str
     overlay_from: str | None = None
     note: str = ""
-    expects_deferral: bool = False
+    expects_deferral: bool | None = None
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
@@ -110,7 +116,7 @@ ARMS = (
         name="v078",
         version="0.78.1",
         note="per-skill defer_loading",
-        expects_deferral=False,
+        expects_deferral=None,
     ),
 )
 
