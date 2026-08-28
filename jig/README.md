@@ -80,10 +80,12 @@ the table looked plausible. So the assumptions are asserted, not assumed.
 `verify-assumptions` asserts what only a recorded turn can show:
 
 - the room config loads under this soliplex version and a turn completes
-- deferral engages or does not, per the arm's `expects_deferral`. It is
-  arm-specific: 0.77.x defers the sandbox itself once the room has two
-  routing capabilities, while 0.78.x defers only the filesystem skill, which
-  this task gives the model no reason to load
+- deferral engages where the arm's `expects_deferral` says it must. That
+  is about policy, not the model's choice: 0.77.x defers the sandbox itself
+  once the room has two routing capabilities, so a turn cannot proceed
+  without `load_capability`. 0.78.x leaves the sandbox eager and defers only
+  the filesystem skill, so loading it is up to the model -- `expects_deferral`
+  is `None` there and nothing is asserted
 
 `verify-assumptions` never drives a turn; it reads what `run` recorded.
 

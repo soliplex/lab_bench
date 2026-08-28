@@ -80,10 +80,15 @@ def verify_smoke_turn(
         )
     ]
 
+    expected = cell.arm.expects_deferral
+    if expected is None:
+        # Nothing to assert: on this arm loading a deferred capability is
+        # the model's choice, not the arm's policy.
+        return out
+
     loaded = any(
         "load_capability" in trial.call_names for trial in trials
     )
-    expected = cell.arm.expects_deferral
     out.append(
         Check(
             cell.name,
