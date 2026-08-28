@@ -21,10 +21,17 @@ release, by holding 0.77.2 with 0.78.1's `SKILL.md` overlaid.
 
 ```bash
 uv sync
-uv run python -m room_behavior build  <work> --trials 20
-uv run python -m room_behavior run    <work>
+uv run python -m room_behavior build  <work>            # install, verify
+uv run python -m room_behavior run    <work> --trials 1 # smoke turn
+uv run python -m room_behavior verify-assumptions <work>
+uv run python -m room_behavior run    <work> --trials 20
 uv run python -m room_behavior report <work>
 ```
+
+`--trials` is a **target**, not a count: `run` tops each cell up to it and
+does nothing if the cell is already there. So the smoke turn counts toward N
+rather than being discarded, and an interrupted run resumes instead of
+restarting.
 
 `<work>` is a disposable directory. `build` is slow -- it installs soliplex
 once per arm and syncs each sandbox environment -- and idempotent. Restrict
@@ -56,6 +63,29 @@ installation will hit again:
 - `thread_persistence_dburi` and `authorization_dburi` are **cwd-relative**
   sqlite URIs, unlike every other path, so each cell runs with its own
   working directory.
+
+## Preconditions
+
+Every defect found in this jig so far was **silent**: the run completed and
+the table looked plausible. So the assumptions are asserted, not assumed.
+
+`build` verifies each thing as it makes it, and raises:
+
+- a code-axis install must match its own `RECORD`, except where an overlay
+  declares otherwise (`verify_install`)
+- a sandbox environment must import what it declares, checked through
+  `uv --directory` so a *resolution* failure is caught and not merely a
+  missing module -- how a uv project named after its own dependency presents
+
+`verify-assumptions` asserts what only a recorded turn can show:
+
+- the room config loads under this soliplex version and a turn completes
+- deferral engages or does not, per the arm's `expects_deferral`. It is
+  arm-specific: 0.77.x defers the sandbox itself once the room has two
+  routing capabilities, while 0.78.x defers only the filesystem skill, which
+  this task gives the model no reason to load
+
+`verify-assumptions` never drives a turn; it reads what `run` recorded.
 
 ## Metrics
 
