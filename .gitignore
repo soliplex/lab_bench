@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# An experiment's working directory is disposable: cells, code-axis
+# environments, and scratch output belong to a run, not to a branch. An
+# 'exp/' branch commits the result data it means to keep, deliberately and
+# by name.
+work/

@@ -119,6 +119,10 @@ Rules:
 - `set/` and `exp/` branches are **never deleted and never force-pushed**.
   Branch rules enforce this. A force-push is worse than a deletion because it
   destroys recorded results invisibly.
+- Each branch of open work gets its own **worktree**, and the `main` worktree
+  stays on `main`. These branches hold mutually incompatible content, so
+  switching one working tree between them invites committing a file to the
+  wrong branch. See [AGENTS.md](AGENTS.md).
 
 ## Creating an experiment set
 
