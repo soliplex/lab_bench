@@ -33,12 +33,13 @@ measure everything; it is to stop confusing a measurement with a hunch.
 
 ## Axis kinds
 
-Only the first needs separate worktrees. Conflating it with the others makes
-a jig more complicated than it needs to be.
+Only the first involves the software under test changing. Conflating it with
+the others makes a jig more complicated than it needs to be.
 
 1. **Code axis** -- the hypothesis is about the software itself (a release
-   comparison, a branch against its base). Each value is a **git ref** and
-   needs its own worktree with its own built environment.
+   comparison, a branch against its base). Each value is a **ref
+   specification**, installed as a pinned dependency into its own virtualenv.
+   See [Code axes](#code-axes).
 2. **Configuration axis** -- same code, patched installation: a room prompt,
    `model_name` / `provider_base_url`, model parameters, which skills a room
    mounts, `defer_loading`, whether a given tool is present in a room, how
@@ -49,6 +50,53 @@ a jig more complicated than it needs to be.
    produces a null that looks like a result.
 4. **Held constant** -- fixtures, databases, environment definitions. Assert
    these are identical across cells (hash them); do not assume it.
+
+## Code axes
+
+An experiment does not check out the software under test. It **installs** it.
+
+Each code-axis value is a pinned dependency in its own virtualenv:
+
+- a released version -- an ordinary version pin, e.g. `soliplex==0.78.1`
+- any other ref -- a git dependency, e.g.
+  `soliplex @ git+https://github.com/soliplex/soliplex@<sha>`
+
+Cells sharing a code-axis value share that virtualenv.
+
+Record the **resolved commit sha** on the experiment issue, not just the tag or
+branch name. Tags can be moved and branches certainly do; a finding pinned to
+`main` is pinned to nothing.
+
+Why install rather than check out:
+
+- the experiment never touches a checkout it does not own, so there is nothing
+  to dirty, restore, or accidentally commit
+- an arm is reproducible from a spec string, which is small enough to live on
+  the issue
+- it measures the software **as shipped**, not as an editable working tree
+
+### Confirm the assets are actually packaged
+
+An editable checkout exposes every file in the tree. An installed distribution
+exposes only what its packaging includes. If the software ships non-Python
+assets that affect behavior -- prompt text, skill instructions, schemas -- then
+an installed arm silently measures *different software* than a checkout would
+when those assets are missing.
+
+Check once per code axis, and assert it in the jig. For soliplex, `MANIFEST.in`
+carries `global-include SKILL.md` and `soliplex/skills/bwrap_sandbox/SKILL.md`
+is present in the built wheel, so skill instructions do travel.
+
+### Isolating co-landed changes
+
+A release bundles every change in it. Attributing an effect to one of them
+needs a synthetic arm: ref A, but with one file taken from ref B.
+
+Declare that as an **overlay** in the experiment spec -- the file, its source
+ref, and where it lands -- applied after the environment is built, with the
+overlay content committed to the `exp/` branch. The arm then describes itself,
+and no branch has to be invented in the software repository to represent a
+state nobody ever shipped.
 
 ## Branches
 
@@ -90,7 +138,7 @@ A jig is specific to one experiment set: it knows what a cell looks like for
 metrics. It lives on the set branch and it may accrete.
 
 The reusable machinery underneath it -- the span collector, the trial driver,
-worktree lifecycle for code axes, config overlays, the scorer framework,
+environment construction for code axes, config overlays, the scorer framework,
 export -- is **not** a jig. It is released from
 [soliplex/lab_harness](https://github.com/soliplex/lab_harness) as the
 `soliplex-lab-harness` package, and a jig **depends on a pinned version** of
