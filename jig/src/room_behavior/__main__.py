@@ -1,6 +1,6 @@
 """Drive the experiment set.
 
-    python -m room_behavior build   <work> [--trials N]
+    python -m room_behavior build   <work> [--matrix M] [--trials N]
     python -m room_behavior run     <work> [--cells a,b]
     python -m room_behavior verify-assumptions <work> [--cells a,b]
     python -m room_behavior report  <work>
@@ -19,6 +19,13 @@ counts toward N and an interrupted run resumes.
 each sandbox environment. 'run' shells into each cell's own code-axis
 environment, which is the point -- the software under test is installed, not
 imported from a checkout.
+
+**'build' takes the matrix; everything else reads it back.** The experiment
+declares which arms, prompt styles and models it crosses; 'build' resolves
+that and writes '<work>/matrix.json'. 'run', 'verify-assumptions' and
+'report' load it from there rather than recomputing it, so a work directory
+can be interpreted without the jig revision that produced it. With no
+--matrix, the default reproduces soliplex/lab_bench#4.
 """
 
 from __future__ import annotations
@@ -35,15 +42,23 @@ from . import verify_assumptions
 from .fixture import write_fixture
 
 
-def selected(names: str | None) -> list[cells_module.Cell]:
+def selected(
+    matrix: cells_module.Matrix, names: str | None
+) -> list[cells_module.Cell]:
     if not names:
-        return cells_module.cells()
+        return matrix.cells()
     wanted = [n.strip() for n in names.split(",") if n.strip()]
-    return [cells_module.by_name(name) for name in wanted]
+    return [matrix.by_name(name) for name in wanted]
 
 
-def do_build(work: pathlib.Path, trials: int, names: str | None) -> int:
-    chosen = selected(names)
+def do_build(
+    work: pathlib.Path,
+    matrix: cells_module.Matrix,
+    trials: int,
+    names: str | None,
+) -> int:
+    matrix.save(work / "matrix.json")
+    chosen = selected(matrix, names)
     environments: dict[str, object] = {}
     for cell in chosen:
         arm = cell.arm
@@ -56,14 +71,22 @@ def do_build(work: pathlib.Path, trials: int, names: str | None) -> int:
             cell, environments[arm.name], work, trials
         )
         print(f"  cell {cell.name} -> {root}")
+    # Raises unless every prompt-axis arm installed distinct text. Like the
+    # RECORD check on an install, this needs nothing but the built tree, so
+    # it runs here and cannot be skipped.
+    for style, found in sorted(
+        build_module.verify_prompt_styles(work, matrix).items()
+    ):
+        print(f"prompt style {style}: {found}")
     return 0
 
 
 def do_run(
     work: pathlib.Path, names: str | None, trials: int | None
 ) -> int:
+    matrix = cells_module.load_matrix(work)
     failures = 0
-    for cell in selected(names):
+    for cell in selected(matrix, names):
         spec = work / "cells" / cell.name / "spec.json"
         if not spec.exists():
             print(f"skipping {cell.name}: not built", file=sys.stderr)
@@ -85,7 +108,8 @@ def do_run(
 def do_verify_assumptions(
     work: pathlib.Path, names: str | None
 ) -> int:
-    checks = verify_assumptions.verify_all(work, selected(names))
+    matrix = cells_module.load_matrix(work)
+    checks = verify_assumptions.verify_all(work, selected(matrix, names))
     for check in checks:
         print(check)
     failed = [check for check in checks if not check.ok]
@@ -97,8 +121,9 @@ def do_verify_assumptions(
 
 
 def do_report(work: pathlib.Path) -> int:
+    matrix = cells_module.load_matrix(work)
     expected = write_fixture(work / "expected")
-    print(report_module.report(work, expected))
+    print(report_module.report(work, matrix, expected))
     return 0
 
 
@@ -113,13 +138,27 @@ def main(argv: list[str] | None = None) -> int:
             child.add_argument("--cells", default=None)
         if name in ("build", "run"):
             child.add_argument("--trials", type=int, default=None)
+        if name == "build":
+            child.add_argument(
+                "--matrix",
+                type=pathlib.Path,
+                default=None,
+                help="the experiment's matrix (.toml or .json)",
+            )
 
     args = parser.parse_args(argv)
     work = args.work.resolve()
     work.mkdir(parents=True, exist_ok=True)
 
     if args.command == "build":
-        return do_build(work, args.trials or 20, args.cells)
+        matrix = (
+            cells_module.Matrix.load(args.matrix.resolve())
+            if args.matrix is not None
+            else cells_module.DEFAULT_MATRIX
+        )
+        return do_build(
+            work, matrix, args.trials or matrix.trials, args.cells
+        )
     if args.command == "run":
         return do_run(work, args.cells, args.trials)
     if args.command == "verify-assumptions":
