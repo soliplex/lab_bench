@@ -1,0 +1,50 @@
+           cell       n      ok  correct  bad tool  bad environment_name  used load_capability   retry  list_environments x2+   turns    secs
+---------------  ------  ------  -------  --------  --------------------  --------------------  ------  ---------------------  ------  ------
+   named-gemma4      30    100%      97%        0%                    0%                   97%      0%                    13%    13.3    10.6
+  named-glimmer      30     97%      97%        0%                    0%                   97%     17%                    30%    17.4    24.5
+   tools-gemma4      30    100%      97%        0%                    0%                    0%      0%                    20%    10.3     6.5
+  tools-glimmer      30    100%     100%        0%                    0%                   47%     17%                     3%    16.2    22.8
+ minimal-gemma4      30    100%      93%        0%                    0%                    0%      0%                    23%    10.9     7.3
+minimal-glimmer      30    100%      97%        0%                    0%                   93%     17%                    13%    16.9    23.9
+
+          turns       n    mean      sd  median     min     max
+---------------  ------  ------  ------  ------  ------  ------
+   named-gemma4      30    13.3     3.8      12      10      27
+  named-glimmer      30    17.4       4      17       6      26
+   tools-gemma4      30    10.3       3     9.5       8      22
+  tools-glimmer      30    16.2     3.7      16      10      28
+ minimal-gemma4      30    10.9       2      11       8      15
+minimal-glimmer      30    16.9     5.2    15.5      11      36
+
+           secs       n    mean      sd  median     min     max
+---------------  ------  ------  ------  ------  ------  ------
+   named-gemma4      30    10.6     4.5     9.2    7.06   28.84
+  named-glimmer      30    24.5     6.2      24    7.53    42.3
+   tools-gemma4      30     6.5       2       6    4.77   12.68
+  tools-glimmer      30    22.8     5.8    22.7    12.1    38.3
+ minimal-gemma4      30     7.3     1.7     7.3    4.74   12.43
+minimal-glimmer      30    23.9     7.1    22.4   12.97      46
+
+        retries       n    mean      sd  median     min     max
+---------------  ------  ------  ------  ------  ------  ------
+   named-gemma4      30       0       0       0       0       0
+  named-glimmer      30     0.2     0.4       0       0       1
+   tools-gemma4      30       0       0       0       0       0
+  tools-glimmer      30     0.2     0.5       0       0       2
+ minimal-gemma4      30       0       0       0       0       0
+minimal-glimmer      30     0.2     0.5       0       0       2
+
+Seconds per turn:
+  named-gemma4: 0.8
+  named-glimmer: 1.41
+  tools-gemma4: 0.63
+  tools-glimmer: 1.41
+  minimal-gemma4: 0.67
+  minimal-glimmer: 1.41
+
+Invented tool names: none
+
+Tool outcomes other than ok:
+  named-glimmer: {'retry-validation': 5}
+  tools-glimmer: {'retry-validation': 6}
+  minimal-glimmer: {'retry-validation': 6}
