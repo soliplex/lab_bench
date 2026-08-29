@@ -16,7 +16,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "soliplex-lab-harness", git = "https://github.com/soliplex/lab_harness?rev=v0.2" }]
+requires-dist = [{ name = "soliplex-lab-harness", git = "https://github.com/soliplex/lab_harness?rev=v0.3" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "ruff", specifier = ">=0.6" }]
@@ -48,5 +48,5 @@ wheels = [
 
 [[package]]
 name = "soliplex-lab-harness"
-version = "0.2"
-source = { git = "https://github.com/soliplex/lab_harness?rev=v0.2#843459cd8527019841fc8cabd6271698c4f1c2f0" }
+version = "0.3"
+source = { git = "https://github.com/soliplex/lab_harness?rev=v0.3#7d48df8181643ebfac3657de66aced6ecb53f960" }

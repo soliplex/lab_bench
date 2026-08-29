@@ -43,9 +43,29 @@ class SandboxEnvironmentUnusable(Exception):
         )
 
 
+class PromptStylesIdentical(Exception):
+    """Two prompt-axis arms installed the same text.
+
+    Which makes them one arm wearing two names, and any difference the
+    report shows between them is noise. This is the shape of the defect
+    that collapsed 'v077skill' into 'v077' (soliplex/lab_harness#5): the
+    run completes, the table looks plausible, and the comparison measured
+    nothing.
+    """
+
+    def __init__(self, digest: str, names: list[str]):
+        self.digest = digest
+        self.names = names
+        joined = ", ".join(names)
+        super().__init__(
+            f"prompt styles {joined} installed identical text "
+            f"(digest {digest}); they are one arm, not several"
+        )
+
+
 HARNESS_PIN = (
     "soliplex-lab-harness @ "
-    "git+https://github.com/soliplex/lab_harness@v0.2"
+    "git+https://github.com/soliplex/lab_harness@v0.3"
 )
 PYTHON = "3.13"
 
@@ -64,6 +84,13 @@ def render_installation(
         rendered, encoding="utf-8"
     )
     template.unlink()
+    # The prompt axis. Copied in rather than referenced, so a cell stays
+    # self-contained and a later edit to the experiment's text cannot
+    # change what an already-built cell runs.
+    if cell.style.prompt is not None:
+        shutil.copyfile(
+            cell.style.prompt, destination / cells_module.ROOM_PROMPT
+        )
     # The sandbox environments are a sibling of the installation, not part
     # of it; 'installation.yaml' points at '../environments'.
     shutil.rmtree(destination / "environments")
@@ -215,9 +242,51 @@ def build_cell(
             "model": cell.model.model_id,
             "endpoint": cell.model.base_url,
             "arm_note": cell.arm.note,
+            "style": cell.style.name,
+            "prompt_digest": cells_module.digest(
+                root / "installation" / cells_module.ROOM_PROMPT
+            ),
         },
     }
     (root / "spec.json").write_text(
         json.dumps(spec, indent=2), encoding="utf-8"
     )
     return root
+
+
+def installed_prompt(work: pathlib.Path, cell) -> pathlib.Path:
+    """Where a built cell's room prompt actually ended up."""
+    return (
+        work
+        / "cells"
+        / cell.name
+        / "installation"
+        / cells_module.ROOM_PROMPT
+    )
+
+
+def verify_prompt_styles(work: pathlib.Path, matrix) -> dict[str, str]:
+    """Every prompt style must have installed distinct text.
+
+    Digests what is on disk, not what was declared: the failure worth
+    catching is an arm that was *meant* to differ and does not, which a
+    declaration cannot show. Returns the digest per style, so 'build' can
+    print what it is about to measure.
+    """
+    seen: dict[str, list[str]] = {}
+    digests: dict[str, str] = {}
+    for style in matrix.styles:
+        for cell in matrix.cells():
+            if cell.style.name != style.name:
+                continue
+            path = installed_prompt(work, cell)
+            if not path.is_file():
+                break
+            found = cells_module.digest(path)
+            digests[style.name] = found
+            seen.setdefault(found, []).append(style.name)
+            break
+    for found, names in seen.items():
+        if len(names) > 1:
+            raise PromptStylesIdentical(found, names)
+    return digests
