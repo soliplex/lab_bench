@@ -1,0 +1,40 @@
+# The prompt-style experiment: soliplex/lab_bench#15.
+#
+# One code arm, three prompt styles, two models. The styles are three ways
+# of writing the same room, all of which leave the model with identical
+# information -- soliplex 0.78.1 injects the eager sandbox capability's
+# 219-line SKILL.md into the instructions, and lists the deferred
+# 'reporting' skill in the capability catalog on every turn. What varies is
+# only what the room prompt says on top of that.
+
+task = "What is the total order value for the Southeast region?"
+trials = 30
+
+[[arms]]
+name = "v078"
+version = "0.78.1"
+note = "sandbox eager, 'reporting' deferred"
+
+[[styles]]
+name = "named"
+prompt = "prompts/named.txt"
+note = "skills named in bold, tools framed as owned by a skill"
+
+[[styles]]
+name = "tools"
+note = "the prompt the jig ships: tool names, no skill names"
+
+[[styles]]
+name = "minimal"
+prompt = "prompts/minimal.txt"
+note = "no skill or tool description at all"
+
+[[models]]
+name = "gemma4"
+base_url = "http://bizon:11432"
+model_id = "gemma4-26b"
+
+[[models]]
+name = "glimmer"
+base_url = "http://bizon:11450"
+model_id = "Inferact/Muse-Glimmer-30B-NVFP4-W4A4"
