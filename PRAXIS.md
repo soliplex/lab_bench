@@ -167,9 +167,11 @@ stay in step with the branches.
 | `set:<set>` | the set itself -- its scope, its retirement | `set/<set>` |
 | `praxis` | these documents | `praxis/<topic>` |
 
-So a label reads as its branch prefix with the first `/` replaced by `:`,
-and the label query for a set separates experiments run from work on the
-apparatus.
+So a label is the branch's first two segments joined with `:`. The slug or
+topic is dropped, which is what lets every experiment in a set share one
+label, and so what makes the label query for a set separate experiments run
+from work on the apparatus. `praxis/<topic>` is the exception: praxis work
+is not scoped to a set, so the label is bare `praxis`.
 
 ### An issue needs to exist before the pull request
 
