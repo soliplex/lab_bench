@@ -82,7 +82,9 @@ the pull request mostly links to it; the commit message is terse. Findings,
 tables, and evidence belong in one place, not in all three.
 
 **Label to match the branch:** `exp:<set>`, `jig:<set>`, `set:<set>`,
-`praxis`. A label is its branch prefix with the first `/` replaced by `:`.
+`praxis`. A label is the branch's first two segments joined with `:`, so a
+set's experiments and jigs all carry that set's name; `praxis/<topic>` is
+the exception, labelled bare `praxis`.
 
 **Close the issue by hand.** A `jig/` or `exp/` pull request targets a
 `set/` branch, and GitHub only auto-closes for pull requests into the
