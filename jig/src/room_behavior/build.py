@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import pathlib
 import shutil
+import tomllib
 
 from soliplex_lab_harness import environs
 
@@ -63,11 +64,35 @@ class PromptStylesIdentical(Exception):
         )
 
 
-HARNESS_PIN = (
-    "soliplex-lab-harness @ "
-    "git+https://github.com/soliplex/lab_harness@v0.3"
-)
 PYTHON = "3.13"
+
+
+class HarnessPinMissing(Exception):
+    """The jig declares no harness dependency to give a cell."""
+
+    def __init__(self, path: pathlib.Path):
+        self.path = path
+        super().__init__(
+            f"{path} declares no 'soliplex-lab-harness' dependency; a cell "
+            "environment needs the same harness the jig itself was built "
+            "against, because a trial is driven in process."
+        )
+
+
+def harness_pin() -> str:
+    """The harness requirement to install into every cell environment.
+
+    Read from 'pyproject.toml' rather than restated here. Stating it twice
+    invites the two copies drifting, and a cell built against a different
+    harness than the jig imports is exactly the kind of difference that
+    would not announce itself.
+    """
+    path = cells_module.jig_root() / "pyproject.toml"
+    declared = tomllib.loads(path.read_text(encoding="utf-8"))
+    for requirement in declared["project"]["dependencies"]:
+        if requirement.split(maxsplit=1)[0] == "soliplex-lab-harness":
+            return requirement
+    raise HarnessPinMissing(path)
 
 
 def render_installation(
@@ -191,7 +216,7 @@ def build_environment(
     environment = environs.build(
         environs.Pin(name=arm.name, version=arm.version),
         work / "envs" / arm.name,
-        extra_requirements=(HARNESS_PIN,),
+        extra_requirements=(harness_pin(),),
         overlays=overlay_for(arm, work, runner),
         python=PYTHON,
         recreate=True,
@@ -230,6 +255,10 @@ def build_cell(
 
     spec = {
         "cell": cell.name,
+        # The interpreter to drive this cell with. Recorded here rather
+        # than rebuilt by the caller, which would have to know how the
+        # environment lays itself out and what the code axis is called.
+        "python": str(environment.python),
         "installation": str(root / "installation" / "installation.yaml"),
         "cwd": str(root),
         "room_id": "workbench",
