@@ -1,0 +1,6 @@
+# Intentionally empty.
+#
+# 'haiku_rag_config_file' in installation.yaml has no null escape: the key
+# must point at a file that exists, even for a set that uses no RAG at all.
+# Deleting this file breaks the installation load with an error that does
+# not mention it.

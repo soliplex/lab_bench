@@ -36,9 +36,14 @@ There is no index file. The issue tracker is the index:
 
 - every experiment has an issue, created from the experiment template, that
   names the branches it uses
+- every **set** has one too, created from the set-proposal template: a set
+  is proposed and accepted rather than branched by hand, and accepting it
+  is what creates `set/<name>`, its scaffold, and its label
 - issues carry a label mirroring their branch kind -- `exp:<set>`,
   `jig:<set>`, `set:<set>`, `praxis` -- so a set's listing separates
   experiments run from work on the apparatus
+- a `status:` label says where a proposal stands -- `proposed`, `accepted`,
+  `declined` -- which is a different question from what kind of work it is
 
 So the list of experiments for a set is a label query, and it is always
 current because nobody has to remember to update it.

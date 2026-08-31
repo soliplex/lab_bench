@@ -1,0 +1,27 @@
+# Rendered per cell: '@@'-delimited markers are substituted at build time,
+# which is why this file keeps its own '.in' suffix after scaffolding.
+#
+# This installation is the jig's own, deliberately. An experiment must be
+# able to change one thing and hold the rest fixed, which an installation
+# maintained for some other purpose cannot promise.
+id: "__SET_NAME__"
+
+room_paths: []          # add './rooms/<room>' once there is a room
+
+# These take a null *entry*, not an empty list: the config rejects an empty
+# sequence, and omitting them entirely picks up defaults you did not choose.
+oidc_paths: [null]
+completion_paths: [null]
+quizzes_paths: [null]
+
+# 'haiku_rag_config_file' has no null escape, so the file must exist even
+# when this set uses no RAG. See haiku.rag.yaml, which is empty on purpose.
+haiku_rag_config_file: ./haiku.rag.yaml
+
+# Relative to the *cwd*, not to this file -- so each cell runs in its own
+# directory. Getting this wrong makes cells share state silently.
+thread_persistence_dburi: "sqlite+aiosqlite:///./db/threads.db"
+authorization_dburi: "sqlite+aiosqlite:///./db/authz.db"
+
+model_name: "@@MODEL@@"
+provider_base_url: "@@BASE_URL@@"

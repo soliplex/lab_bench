@@ -1,0 +1,103 @@
+name: Experiment set proposal
+description: Propose a new experiment set, and the apparatus it would need
+title: "[set] "
+labels: ["status:proposed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A set is a subject, not an experiment: a different installation, a
+        different room family, a different question. If only the axes
+        change, reuse an existing set -- that is what experiments within a
+        set are for.
+
+        **Start in a discussion, not here.** This form is the second
+        stage, for a scope that has already settled. Nothing is lost when a
+        discussion ends in no set at all.
+
+        **Acceptance is adding `status:accepted`.** A workflow then creates
+        `set/<name>` with its scaffold, mints `set:<name>`, and applies it
+        here -- this issue then *is* the set's, tracking its scope and
+        eventually its retirement. **That branch cannot be deleted
+        afterwards** -- the ruleset forbids it -- so the name is worth
+        getting right.
+
+        Declining is closing this issue as `status:declined`. No branch,
+        no label.
+  - type: input
+    id: set-name
+    attributes:
+      label: Set name
+      description: >
+        Lowercase words joined by hyphens. Becomes both the `set/<name>`
+        branch and the `set:<name>` label, so it must be safe as both.
+      placeholder: retrieval-hubs
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: Jig package name
+      description: >
+        The Python package under `jig/src/`. A valid identifier, so
+        **not** the set name with hyphens in it -- and not necessarily the
+        set name at all: `soliplex-room-behavior` chose `room_behavior`.
+      placeholder: retrieval_hubs
+    validations:
+      required: true
+  - type: textarea
+    id: phenomenon
+    attributes:
+      label: The phenomenon
+      description: >
+        What behavior is being studied, and how it shows up. If it was
+        reported rather than reproduced, say so.
+    validations:
+      required: true
+  - type: textarea
+    id: why-apparatus
+    attributes:
+      label: Why it deserves apparatus of its own
+      description: >
+        Why an existing set cannot answer this, and what a jig for it would
+        have to observe that nothing here observes today.
+    validations:
+      required: true
+  - type: textarea
+    id: cost
+    attributes:
+      label: What it would cost
+      description: >
+        New harness surface, new fixtures, new environments. Say plainly if
+        this is not a small follow-on.
+    validations:
+      required: true
+  - type: textarea
+    id: preconditions
+    attributes:
+      label: Preconditions, before any trials
+      description: >
+        The state a run must print and confirm before spending trials. A
+        cell that structurally cannot exhibit the behavior produces a null
+        that reads as a result; this has already cost this bench twice.
+    validations:
+      required: true
+  - type: dropdown
+    id: publishability
+    attributes:
+      label: Publishability
+      description: >
+        This repository is PUBLIC. Confirm nothing customer-derived is
+        involved. A phenomenon can be public even when the corpus that
+        revealed it is not -- but then only the reconstructed version
+        belongs here.
+      options:
+        - "Public: the phenomenon is reconstructible from nothing"
+        - "Mixed: some part is not publishable (say which below)"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: The discussion this came from, and open questions.

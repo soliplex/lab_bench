@@ -26,7 +26,7 @@ Check first:
 
 | you are on | you may | you may not |
 | --- | --- | --- |
-| `main` | edit praxis docs on a `praxis/<topic>` branch, then PR to `main` | commit experiment code, jigs, or data |
+| `main` | edit praxis docs, `.github/`, and `set-template/` on a `praxis/<topic>` branch, then PR to `main` | commit experiment code, jigs, or data |
 | `praxis/<topic>` | commit praxis-doc changes; PR into `main` | commit experiment code, jigs, or data |
 | `set/<name>` | read; branch to `jig/...` for changes | commit directly; open a PR to `main` |
 | `jig/<set>/<topic>` | commit jig changes; PR **into** the `set/` branch | PR to `main` |
@@ -34,6 +34,16 @@ Check first:
 
 A branch off a `set/` branch is mergeable only if it is named `jig/...`. An
 `exp/...` branch is never the basis for a pull request.
+
+**`set-template/` is not a jig**, which is why `main` may carry it. Every
+file in it ends `.tmpl`, so nothing there is importable, buildable, or
+runnable -- that is a mechanical test, not a judgement call. If you find
+yourself deleting a `.tmpl` suffix to make something in that tree work, you
+are committing a jig to `main`.
+
+**You do not create a `set/` branch by hand.** It is created by the
+`set accepted` workflow when a set proposal is labelled `status:accepted`,
+and it cannot be deleted afterwards.
 
 ## One worktree per branch
 
