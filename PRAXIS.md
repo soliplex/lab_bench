@@ -151,6 +151,12 @@ container when the proposal is accepted:
    the scope it argued is exactly what that label is for. Declining is
    closing the proposal `status:declined`, with no branch and no labels.
 
+   The proposal also gains one line at the top: its branch, and the
+   `exp:` and `jig:` labels as bare URLs, which GitHub renders as the
+   labels themselves. The issue is then the set's hub and not only its
+   scope. Those land on *open* issues, as clicking a label does anywhere
+   -- so the index is work in flight, not the set's whole history.
+
    All three are minted at once because the other two are needed the
    moment anyone opens a jig or an experiment issue for the set, and
    hand-making them then is the papercut that motivated automating this.

@@ -105,6 +105,34 @@ def ensure_set_labels(repo: str, name: str) -> list[str]:
     return minted
 
 
+HUB_START = "<!-- set-hub -->"
+HUB_END = "<!-- /set-hub -->"
+
+
+def prepend_block(repo: str, issue: str, block: str) -> None:
+    """Put 'block' at the very top of an issue body.
+
+    Above the first heading rather than after the text: a proposal argues
+    scope, cost and preconditions, so it tends toward a wall of text, and
+    anything appended is below the fold exactly when the set is
+    substantial enough to want an index.
+
+    Delimited by markers so a second run replaces its own block instead of
+    prepending twice. Nothing else is touched -- the proposal's prose
+    belongs to whoever filed it.
+    """
+    body = api(f"repos/{repo}/issues/{issue}")["body"] or ""
+    if HUB_START in body and HUB_END in body:
+        head, _, rest = body.partition(HUB_START)
+        _, _, tail = rest.partition(HUB_END)
+        body = (head + tail).lstrip("\n")
+    api(
+        f"repos/{repo}/issues/{issue}",
+        {"body": f"{HUB_START}\n{block}\n{HUB_END}\n\n{body}"},
+        method="PATCH",
+    )
+
+
 def comment(repo: str, issue: str, body: str) -> None:
     api(
         f"repos/{repo}/issues/{issue}/comments",
