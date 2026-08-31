@@ -33,6 +33,34 @@ SET_NAME = "Set name"
 PACKAGE = "Jig package name"
 
 
+def hub_line(repo: str, name: str) -> str:
+    """The set's branch and its two label indexes, as one line.
+
+    The label links are **bare URLs on purpose**: GitHub renders an
+    unadorned label URL as the label chip -- its colour, its description
+    as a hover tooltip, and its name taken from the label rather than
+    typed, so the text cannot drift from what it names. Wrapping one in
+    '[text](url)' suppresses all of that.
+
+    The branch is a markdown link because a bare tree URL gets no such
+    treatment; commits, issues and labels do, branches do not.
+
+    A label link lands on open issues, as clicking that label does
+    anywhere in GitHub. That hides closed work -- an experiment's issue
+    closes when its findings are recorded, and a jig issue when its pull
+    request merges -- so the index is what is in flight, not the set's
+    whole history. Consistency with every other label in the interface is
+    worth more than completeness here, and dropping the filter is one
+    click for a reader who wants everything.
+    """
+    base = f"https://github.com/{repo}"
+    return (
+        f"[`set/{name}`]({base}/tree/set/{name})"
+        f" · {base}/labels/exp%3A{name}"
+        f" · {base}/labels/jig%3A{name}"
+    )
+
+
 def check(
     repo: str, issue: str, labels: set[str], name: str, package: str
 ) -> str:
@@ -94,6 +122,7 @@ def main() -> int:
     # This issue is now the set's, so it carries the set's label and stops
     # being a pending proposal.
     forge.add_label(repo, issue, f"set:{name}")
+    forge.prepend_block(repo, issue, hub_line(repo, name))
     forge.remove_label(repo, issue, forge.PROPOSED)
     forge.remove_label(repo, issue, ROUTING)
     forge.comment(
