@@ -102,6 +102,13 @@ default branch. Nothing will close it for you. Keep `Closes #N` in the pull
 request body regardless -- it records intent -- and note that the keyword
 does nothing in a commit message alone.
 
+**But never close a set's issue.** An experiment finishes -- its trials are
+run, its findings recorded -- so its issue closes. A set tests a *class* of
+problems, and nobody can claim to have found the last one, so its issue
+stays open for as long as the repository does. An old set issue with no
+recent comments is not neglected work, in the same way an unmerged `set/`
+branch is not stale work.
+
 ## Running an experiment
 
 Before spending trials, print the state the hypothesis depends on and confirm
@@ -110,8 +117,15 @@ are registered, which environments exist. A cell that structurally cannot
 exhibit the behavior under test yields a null that reads as a real result.
 This has already happened twice.
 
-Record interpretation as comments on the experiment's issue. Commit artifacts
-to the `exp/` branch. Do not put findings only in a commit message.
+**Append findings to `EXPERIMENT.md` on the `exp/` branch**, dated, leaving
+earlier entries standing. Not to the issue: the file is the record, because
+a branch cannot be force-pushed and an issue can be edited silently. Commit
+artifacts alongside it. Do not put findings only in a commit message.
+
+You do not create an `exp/` branch by hand either. It is created by the
+`experiment accepted` workflow when the issue is labelled `status:accepted`,
+already holding its rendered `EXPERIMENT.md`, and it cannot be deleted
+afterwards.
 
 ## Reporting
 
