@@ -28,7 +28,13 @@ permissions:
 
 jobs:
   scaffold:
-    if: github.event.label.name == 'status:accepted'
+    # Both acceptances listen for the same label, so each answers
+    # only for its own kind. 'proposal:set' is applied by the issue
+    # template, so routing does not depend on prose a collaborator
+    # might reformat while editing the proposal.
+    if: >-
+      github.event.label.name == 'status:accepted'
+      && contains(github.event.issue.labels.*.name, 'proposal:set')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

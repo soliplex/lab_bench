@@ -1,17 +1,29 @@
 name: Experiment
 description: Record and track one measurement experiment
 title: "[exp] "
-labels: ["experiment"]
+labels: ["status:proposed", "proposal:exp"]
 body:
   - type: markdown
     attributes:
       value: |
-        One issue per experiment. Findings go in comments on this issue as
-        runs complete; result data is committed to the `exp/` branch.
+        One issue per experiment. **Start in a discussion** -- this form
+        is the second stage, for a design that has settled.
 
-        Add an `exp:<set>` label so this issue shows up in that set's
-        listing. It will not auto-close: an experiment branch never
-        merges, so close it by hand when the findings are recorded.
+        **Acceptance is adding `status:accepted`.** A workflow then renders
+        these fields into `EXPERIMENT.md` and creates `exp/<set>/<slug>`
+        already holding it. **That branch cannot be deleted afterwards** --
+        the ruleset forbids it -- so the branch name is worth getting
+        right.
+
+        **From then on, `EXPERIMENT.md` is the record.** Findings are
+        appended there as runs complete, dated -- not to this issue. What
+        you write below is written before the run and committed to a branch
+        that cannot be force-pushed, which is what makes it
+        pre-registration rather than a claim about one.
+
+        Acceptance applies the `exp:<set>` label, so this issue shows up
+        in that set's listing. It will not auto-close: an experiment branch
+        never merges, so close it by hand when the findings are recorded.
   - type: input
     id: set-branch
     attributes:
@@ -110,9 +122,21 @@ body:
     validations:
       required: true
   - type: textarea
+    id: preconditions
+    attributes:
+      label: Preconditions
+      description: >
+        The state to print and confirm *before* spending trials -- resolved
+        flags, the tool names actually registered, which capabilities are
+        deferred. A cell that structurally cannot exhibit the behavior
+        under test yields a null that reads as a result; that has already
+        cost this bench twice.
+    validations:
+      required: true
+  - type: textarea
     id: notes
     attributes:
       label: Notes
       description: >
-        Preconditions verified before running, arms deliberately excluded,
-        known rig artifacts.
+        Arms deliberately excluded, known rig artifacts, the discussion
+        this came from.

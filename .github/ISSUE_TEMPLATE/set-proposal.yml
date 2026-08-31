@@ -1,7 +1,7 @@
 name: Experiment set proposal
 description: Propose a new experiment set, and the apparatus it would need
 title: "[set] "
-labels: ["status:proposed"]
+labels: ["status:proposed", "proposal:set"]
 body:
   - type: markdown
     attributes:
@@ -17,10 +17,9 @@ body:
 
         **Acceptance is adding `status:accepted`.** A workflow then creates
         `set/<name>` with its scaffold, mints `set:<name>`, and applies it
-        here -- this issue then *is* the set's, tracking its scope and
-        eventually its retirement. **That branch cannot be deleted
-        afterwards** -- the ruleset forbids it -- so the name is worth
-        getting right.
+        here -- this issue then *is* the set's, where its scope is
+        argued and recorded. **That branch cannot be deleted afterwards**
+        -- the ruleset forbids it -- so the name is worth getting right.
 
         Declining is closing this issue as `status:declined`. No branch,
         no label.

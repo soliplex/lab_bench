@@ -145,11 +145,15 @@ container when the proposal is accepted:
    once the scope has settled -- nothing is lost when a discussion ends in
    no set.
 2. **Acceptance is adding `status:accepted`.** A workflow creates
-   `set/<name>` already pointing at its scaffold commit, mints the
-   `set:<name>` label, and puts it on the proposal -- which becomes the
-   set's own issue, since the scope it argued is exactly what that label
-   is for. Declining is closing the proposal `status:declined`, with no
-   branch and no label.
+   `set/<name>` already pointing at its scaffold commit, mints all three
+   of the set's labels -- `set:`, `jig:` and `exp:` -- and puts
+   `set:<name>` on the proposal, which becomes the set's own issue, since
+   the scope it argued is exactly what that label is for. Declining is
+   closing the proposal `status:declined`, with no branch and no labels.
+
+   All three are minted at once because the other two are needed the
+   moment anyone opens a jig or an experiment issue for the set, and
+   hand-making them then is the papercut that motivated automating this.
 3. **The jig arrives by pull request**, from `jig/<name>/initial` into
    `set/<name>`, and is reviewed there.
 
@@ -195,7 +199,7 @@ stay in step with the branches.
 | --- | --- | --- |
 | `exp:<set>` | one experiment | `exp/<set>/<slug>` |
 | `jig:<set>` | that set's jig | `jig/<set>/<topic>` |
-| `set:<set>` | the set itself -- its scope, its retirement | `set/<set>` |
+| `set:<set>` | the set itself, and its scope | `set/<set>` |
 | `praxis` | these documents | `praxis/<topic>` |
 
 So a label is the branch's first two segments joined with `:`. The slug or
@@ -203,6 +207,12 @@ topic is dropped, which is what lets every experiment in a set share one
 label, and so what makes the label query for a set separate experiments run
 from work on the apparatus. `praxis/<topic>` is the exception: praxis work
 is not scoped to a set, so the label is bare `praxis`.
+
+**A set's issue stays open.** An experiment finishes when its trials are run
+and its findings recorded, so its issue closes; a set tests a *class* of
+problems, and nobody can claim to have found the last one. An old set issue
+with no recent comments is not neglected work -- it is the same shape as a
+`set/` branch that looks abandoned and is not.
 
 ### Lifecycle is a second axis
 
@@ -214,14 +224,31 @@ is not scoped to a set, so the label is bare `praxis`.
 
 These derive from no branch -- they say where a proposal stands, not what
 kind of work it is -- so they are a separate namespace and the rule above
-does not reach them. A proposal carries one of the three *and* nothing else
-until it is accepted, because the label naming its set is one of the things
-acceptance creates.
+does not reach them. A pending proposal carries `status:proposed`, and
+exactly one of the other two ever replaces it.
 
 Adding a named label is better than removing one: dropping
 `status:proposed` is a stray click, while adding `status:accepted` is a
 choice among three named outcomes, and the workflow can refuse unless
 `status:proposed` was actually there.
+
+### And a third, saying which kind of proposal it is
+
+| label | applied by | meaning |
+| --- | --- | --- |
+| `proposal:set` | the set-proposal form | a pending set proposal |
+| `proposal:exp` | the experiment form | a pending experiment proposal |
+
+Both acceptances listen for `status:accepted` on the same event, so each
+needs to answer only for its own kind. That routing is a label rather than
+anything in the issue body, because the template applies it and it
+therefore survives a collaborator reformatting the prose while editing a
+proposal.
+
+Acceptance strips it -- the issue is then a set's or an experiment's, not a
+pending anything. A **declined** proposal keeps it, which is what makes
+`proposal:exp` + `status:declined` a readable record of an experiment that
+was considered and not run.
 
 ### An issue needs to exist before the pull request
 
@@ -261,27 +288,50 @@ only ones where the automation does anything.
 
 ## Running an experiment
 
-1. **Open an issue** from the experiment template. It records the shared
-   branch, the refs under test, model ids, N, the fixture seed, the harness
-   version, and the verbatim task prompt.
-2. **Branch from the set branch:**
-
-       git switch set/<name>
-       git switch -c exp/<name>/<slug>
-
+1. **Open an issue** from the experiment template, born
+   `status:proposed`. It records the set branch, the refs under test,
+   model ids, N, the fixture seed, the harness version, the preconditions,
+   and the verbatim task prompt.
+2. **Acceptance is adding `status:accepted`.** A workflow renders those
+   fields into `EXPERIMENT.md`, creates `exp/<set>/<slug>` already holding
+   it, and labels the issue `exp:<set>` so it appears in the set's
+   listing. Nobody hand-writes the pre-registration, and it lands on a
+   branch that cannot be force-pushed. Declining is closing the issue
+   `status:declined`, with no branch.
 3. **Verify preconditions before spending trials.** Print the state the
    hypothesis depends on -- resolved `defer_loading` flags, the tool names
    actually registered, which capabilities are deferred. Two nulls in the
    motivating investigation were burned on cells that structurally could not
    exhibit the behavior under test. One command would have caught both.
 4. **Run.** Commit result data to the `exp/` branch as runs complete.
-5. **Record findings as comments on the issue**, as you go. Interpretation
-   lives in the issue; artifacts live in commits.
+5. **Append findings to `EXPERIMENT.md`**, dated, as you go. Leave earlier
+   entries standing: a reading that a later run supersedes is part of the
+   record, not a mistake to tidy away.
+
+### Why the record is a file, not the issue
+
+`set/` and `exp/` branches cannot be deleted or force-pushed; issues have
+no equivalent. A clone carries every branch and no comments, so handing
+someone this repository used to give them all the result data, none of the
+reasoning, and no statement of what was being attempted.
+
+The sharper point is about evidence. A form's setup fields can be edited
+after results are in, silently and without review, so **pre-registration in
+a tracker is not evidence of anything.** The same text committed before the
+run, on a branch that cannot be quietly revised, is.
+
+The issue keeps its body and stays the place to discuss. It is the index;
+the file is the record.
+
+**This is not retroactive.** #4 and #15 have their setup in the form and
+their findings in comments. They stay that way, so a reader has to know
+which era an experiment belongs to.
 
 ## What to commit
 
 Commit:
 
+- `EXPERIMENT.md` -- the pre-registration, and the findings as they land
 - per-trial JSONL (one record per run)
 - the **fixture generator**, not the fixture -- a seeded script, with the
   seed and the expected value recorded

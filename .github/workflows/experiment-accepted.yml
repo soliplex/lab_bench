@@ -1,0 +1,45 @@
+# Pre-registers an experiment when its proposal is accepted.
+#
+# The forge renders the form into 'EXPERIMENT.md' and creates
+# 'exp/<set>/<slug>' already holding it. Nobody hand-writes the
+# pre-registration, and the record lands on a branch that cannot be
+# force-pushed -- which is the whole point: the same text in an issue can
+# be edited silently after results are in.
+#
+# Findings are NOT written here. They are appended to the file by hand as
+# they land, dated, with earlier entries left standing.
+#
+# Creating the branch is IRREVERSIBLE: the 'exp/*' ruleset carries
+# 'deletion' and 'non_fast_forward' with zero bypass actors. Every
+# precondition is checked before the ref is created, and nothing about the
+# issue is touched until it exists.
+name: experiment accepted
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write   # create refs; the repo-wide default is read-only
+  issues: write     # the proposal's labels and a comment
+
+jobs:
+  pre-register:
+    # Both acceptances listen for the same label, so each answers
+    # only for its own kind. 'proposal:exp' is applied by the issue
+    # template, so routing does not depend on prose a collaborator
+    # might reformat while editing the proposal.
+    if: >-
+      github.event.label.name == 'status:accepted'
+      && contains(github.event.issue.labels.*.name, 'proposal:exp')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render EXPERIMENT.md and create the branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+          REPO: ${{ github.repository }}
+        run: python .github/scripts/accept_experiment.py
