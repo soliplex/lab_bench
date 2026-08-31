@@ -5,11 +5,10 @@ environment only ever needs soliplex and the harness:
 
     <env>/bin/python run.py <cell>/spec.json [target]
 
-``trials`` in the spec is a **target**, not a count: this tops the result
-file up to that many records and does nothing if it is already there. So a
-single smoke trial can be run first, verified, and then extended to the full
-N without discarding it -- and an interrupted run resumes rather than
-restarting.
+``trials`` in the spec is a **target**, not a count, and
+``records.top_up`` is what honours that: a single smoke trial can be run
+first, verified, and then extended to the full N without discarding it, and
+an interrupted run resumes rather than restarting.
 """
 
 from __future__ import annotations
@@ -42,14 +41,8 @@ def main(argv: list[str]) -> int:
     collector = drive.install_collector()
     installation = drive.load_installation(target)
 
-    done = len(records.read(results)) if results.exists() else 0
-    wanted = spec["trials"]
-    if done >= wanted:
-        print(f"[{spec['cell']}] already has {done}/{wanted}", flush=True)
-        return 0
-
-    for trial in range(done, wanted):
-        record = drive.run_trial(
+    def one_trial(trial: int) -> records.TrialRecord:
+        return drive.run_trial(
             target,
             spec["task"],
             cell=spec["cell"],
@@ -58,13 +51,20 @@ def main(argv: list[str]) -> int:
             installation=installation,
             metadata=spec["metadata"],
         )
-        records.append(results, record)
+
+    def announce(record: records.TrialRecord) -> None:
         names = " -> ".join(n or "?" for n in record.call_names)
         print(
-            f"[{record.cell} #{trial}] {record.elapsed_s}s "
+            f"[{record.cell} #{record.trial}] {record.elapsed_s}s "
             f"ok={record.ok} {names or '(no calls)'}",
             flush=True,
         )
+
+    wanted = spec["trials"]
+    ran = records.top_up(results, wanted, one_trial, on_trial=announce)
+    if not ran:
+        done = records.completed(results)
+        print(f"[{spec['cell']}] already has {done}/{wanted}", flush=True)
     return 0
 
 

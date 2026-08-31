@@ -20,44 +20,22 @@ mistaken for a measurement failure.
 
 from __future__ import annotations
 
-import dataclasses
 import pathlib
 
+from soliplex_lab_harness import preconditions
 from soliplex_lab_harness import records
 
 from . import cells as cells_module
 
 
-class PreconditionFailed(Exception):
-    """A run would have measured something other than it claims."""
-
-    def __init__(self, failures: list[str]):
-        self.failures = failures
-        body = "\n".join(f"  - {failure}" for failure in failures)
-        super().__init__(f"{len(failures)} precondition(s) failed:\n{body}")
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
-class Check:
-    cell: str
-    what: str
-    ok: bool
-    detail: str = ""
-
-    def __str__(self) -> str:
-        mark = "ok  " if self.ok else "FAIL"
-        tail = f" -- {self.detail}" if self.detail else ""
-        return f"  {mark} {self.cell}: {self.what}{tail}"
-
-
 def verify_smoke_turn(
     cell: cells_module.Cell, work: pathlib.Path
-) -> list[Check]:
+) -> list[preconditions.Result]:
     """What only a turn can establish, read from the kept smoke result."""
     path = work / "results" / f"{cell.name}.jsonl"
     if not path.exists():
         return [
-            Check(
+            preconditions.Result(
                 cell.name,
                 "smoke turn recorded",
                 False,
@@ -67,12 +45,14 @@ def verify_smoke_turn(
     trials = records.read(path)
     if not trials:
         return [
-            Check(cell.name, "smoke turn recorded", False, "empty results")
+            preconditions.Result(
+                cell.name, "smoke turn recorded", False, "empty results"
+            )
         ]
 
     first = trials[0]
     out = [
-        Check(
+        preconditions.Result(
             cell.name,
             "room config loads and a turn completes",
             first.ok,
@@ -90,7 +70,7 @@ def verify_smoke_turn(
         "load_capability" in trial.call_names for trial in trials
     )
     out.append(
-        Check(
+        preconditions.Result(
             cell.name,
             f"deferral engages (expected: {expected})",
             loaded == expected,
@@ -100,19 +80,10 @@ def verify_smoke_turn(
     return out
 
 
-def verify_all(work: pathlib.Path, chosen) -> list[Check]:
-    checks: list[Check] = []
+def verify_all(
+    work: pathlib.Path, chosen
+) -> list[preconditions.Result]:
+    results: list[preconditions.Result] = []
     for cell in chosen:
-        checks.extend(verify_smoke_turn(cell, work))
-    return checks
-
-
-def assert_ok(checks: list[Check]) -> None:
-    failures = [
-        f"{check.cell}: {check.what}"
-        + (f" -- {check.detail}" if check.detail else "")
-        for check in checks
-        if not check.ok
-    ]
-    if failures:
-        raise PreconditionFailed(failures)
+        results.extend(verify_smoke_turn(cell, work))
+    return results

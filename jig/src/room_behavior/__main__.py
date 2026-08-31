@@ -31,9 +31,12 @@ can be interpreted without the jig revision that produced it. With no
 from __future__ import annotations
 
 import argparse
+import json
 import pathlib
 import subprocess
 import sys
+
+from soliplex_lab_harness import preconditions
 
 from . import build as build_module
 from . import cells as cells_module
@@ -92,10 +95,11 @@ def do_run(
             print(f"skipping {cell.name}: not built", file=sys.stderr)
             failures += 1
             continue
-        python = work / "envs" / cell.arm.name / "bin" / "python"
+        declared = json.loads(spec.read_text(encoding="utf-8"))
+        python = declared["python"]
         script = pathlib.Path(build_module.__file__).with_name("run.py")
         print(f"=== {cell.name} ===", flush=True)
-        argv = [str(python), str(script), str(spec)]
+        argv = [python, str(script), str(spec)]
         if trials is not None:
             argv.append(str(trials))
         completed = subprocess.run(  # noqa: S603 -- argv is built
@@ -109,14 +113,12 @@ def do_verify_assumptions(
     work: pathlib.Path, names: str | None
 ) -> int:
     matrix = cells_module.load_matrix(work)
-    checks = verify_assumptions.verify_all(work, selected(matrix, names))
-    for check in checks:
-        print(check)
-    failed = [check for check in checks if not check.ok]
-    if failed:
-        print(f"\n{len(failed)} precondition(s) failed", flush=True)
+    results = verify_assumptions.verify_all(work, selected(matrix, names))
+    print(preconditions.render(results), flush=True)
+    try:
+        preconditions.assert_ok(results)
+    except preconditions.Failed:
         return 1
-    print(f"\nall {len(checks)} preconditions hold", flush=True)
     return 0
 
 
