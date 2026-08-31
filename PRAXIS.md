@@ -193,8 +193,8 @@ are that something is overlooked or the whole thing stalls.
 
 ### Close the issue by hand
 
-A `jig/` or `exp/` pull request targets a `set/` branch, never the default
-branch. GitHub only forms a development link -- and only auto-closes -- for
+A `jig/` pull request targets a `set/` branch, never the default branch.
+GitHub only forms a development link -- and only auto-closes -- for
 pull requests into the default branch, so **nothing will close the issue for
 you**. Close it when you merge.
 

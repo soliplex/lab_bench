@@ -86,8 +86,8 @@ tables, and evidence belong in one place, not in all three.
 set's experiments and jigs all carry that set's name; `praxis/<topic>` is
 the exception, labelled bare `praxis`.
 
-**Close the issue by hand.** A `jig/` or `exp/` pull request targets a
-`set/` branch, and GitHub only auto-closes for pull requests into the
+**Close the issue by hand.** A `jig/` pull request targets a `set/`
+branch, and GitHub only auto-closes for pull requests into the
 default branch. Nothing will close it for you. Keep `Closes #N` in the pull
 request body regardless -- it records intent -- and note that the keyword
 does nothing in a commit message alone.
