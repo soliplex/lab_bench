@@ -1,0 +1,63 @@
+# `retrieval_failures` jig
+
+REPLACE ME: one line on what this set measures and why it needs apparatus
+of its own.
+
+## What it varies
+
+| axis | kind | values |
+| --- | --- | --- |
+| | code / configuration / task | |
+
+An axis kind is not cosmetic: only a **code** axis involves the software
+under test changing, and each of its values is installed as a pinned
+dependency into its own virtualenv, never checked out.
+
+### The experiment declares its matrix
+
+A set says what *can* vary; an experiment says what *does*. Keep the
+matrix in the experiment's own directory on its `exp/` branch, so the
+recorded results and the choice that produced them travel together.
+
+## Running it
+
+```
+uv sync
+uv run python -m retrieval_failures build              <work>
+uv run python -m retrieval_failures run                <work> --trials 1
+uv run python -m retrieval_failures verify-assumptions <work>
+uv run python -m retrieval_failures run                <work> --trials 20
+uv run python -m retrieval_failures report             <work>
+```
+
+`--trials` is a **target, not a count**: the smoke turn counts toward N,
+and an interrupted run resumes. `<work>` is disposable -- nothing in it is
+committed.
+
+## Why the installation is ours
+
+REPLACE ME, or delete. The template ships an `installation.yaml.in` with
+the traps already worked around: `[null]` entries for `oidc_paths` /
+`completion_paths` / `quizzes_paths`, a `haiku.rag.yaml` that must exist
+while being empty, and cwd-relative sqlite URIs so cells do not share
+state. Say here what else this set's installation needs to be its own.
+
+## Preconditions
+
+REPLACE ME: what `verify_assumptions` asserts, and why each one is
+capable of failing silently.
+
+Every defect found in the one jig that came before this template was
+**silent** -- the run completed and the table looked plausible. That is
+the reason these are assertions rather than notes.
+
+## Metrics
+
+| metric | why it carries signal |
+| --- | --- |
+| | |
+
+## Fixture
+
+REPLACE ME: the generator, its seed, and the expected value a scorer
+checks for. Commit the generator, never the generated fixture.

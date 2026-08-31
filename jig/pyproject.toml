@@ -1,0 +1,34 @@
+[project]
+name = "retrieval-failures-jig"
+version = "0.1"
+description = "Jig for the retrieval-failures experiment set"
+requires-python = ">=3.13"
+dependencies = [
+    # Pinned to the latest harness release at the moment this set was
+    # scaffolded. Bump it deliberately: a finding is only reproducible if
+    # the apparatus that measured it is identified too, so the version in
+    # use gets recorded on the experiment issue.
+    "soliplex-lab-harness @ git+https://github.com/soliplex/lab_harness@v0.4",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.1,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "retrieval_failures"
+
+[tool.ruff]
+line-length = 79
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["F", "E", "B", "UP", "I", "PD", "TRY", "PT"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
