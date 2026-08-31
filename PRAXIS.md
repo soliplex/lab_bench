@@ -1,7 +1,13 @@
 # Praxis
 
-How we run and preserve measurement experiments. This file, and only files
-like it, are what a pull request against `main` may change.
+How we run and preserve measurement experiments. A pull request against
+`main` may change files like this one, and two other things: the forms and
+workflows under `.github/`, and the scaffold in `set-template/`.
+
+`set-template/` is not a jig, and there is a mechanical test for that rather
+than an argument: every file in it ends `.tmpl`, so nothing in the tree is
+importable, buildable, or runnable, and there is no `pyproject.toml` for
+tooling to discover. It is a form, like the issue templates beside it.
 
 ## Why this exists
 
@@ -130,10 +136,35 @@ Create a new set when the *subject* changes -- a different installation, a
 different room family, a different question. Reuse an existing set when only
 the axes change; that is what experiments within a set are for.
 
-    git switch main
-    git switch -c set/<name>
+A set is not created by hand. It is **proposed**, and the forge creates the
+container when the proposal is accepted:
 
-Commit the jig.
+1. **File a set proposal** from the issue template. It is born
+   `status:proposed`, and argues scope: what phenomenon, why it deserves
+   apparatus, what it would cost. Start in a discussion and promote it here
+   once the scope has settled -- nothing is lost when a discussion ends in
+   no set.
+2. **Acceptance is adding `status:accepted`.** A workflow creates
+   `set/<name>` already pointing at its scaffold commit, mints the
+   `set:<name>` label, and puts it on the proposal -- which becomes the
+   set's own issue, since the scope it argued is exactly what that label
+   is for. Declining is closing the proposal `status:declined`, with no
+   branch and no label.
+3. **The jig arrives by pull request**, from `jig/<name>/initial` into
+   `set/<name>`, and is reviewed there.
+
+The split is that **the forge generates the container, and people author and
+review the contents.** No workflow writes anything anyone has to trust.
+
+Two things follow from the `set/*` rules, and are worth knowing before
+accepting anything:
+
+- **Acceptance is irreversible.** The branch cannot be deleted or
+  force-pushed, by anyone, without disabling the ruleset. The workflow
+  therefore validates the name and the package before it creates the ref.
+- **The scaffold lands in the creating push.** Ref creation is exempt from
+  the `pull_request` rule, but nothing afterwards is, so the workflow gets
+  exactly one shot and can never push a correction.
 
 ### Jig vs. harness
 
@@ -172,6 +203,25 @@ topic is dropped, which is what lets every experiment in a set share one
 label, and so what makes the label query for a set separate experiments run
 from work on the apparatus. `praxis/<topic>` is the exception: praxis work
 is not scoped to a set, so the label is bare `praxis`.
+
+### Lifecycle is a second axis
+
+| label | meaning |
+| --- | --- |
+| `status:proposed` | filed, not yet accepted |
+| `status:accepted` | accepted; the branch and label exist |
+| `status:declined` | not being run |
+
+These derive from no branch -- they say where a proposal stands, not what
+kind of work it is -- so they are a separate namespace and the rule above
+does not reach them. A proposal carries one of the three *and* nothing else
+until it is accepted, because the label naming its set is one of the things
+acceptance creates.
+
+Adding a named label is better than removing one: dropping
+`status:proposed` is a stray click, while adding `status:accepted` is a
+choice among three named outcomes, and the workflow can refuse unless
+`status:proposed` was actually there.
 
 ### An issue needs to exist before the pull request
 

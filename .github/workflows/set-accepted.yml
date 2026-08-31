@@ -1,0 +1,42 @@
+# Creates a set's container when its proposal is accepted.
+#
+# The forge generates the container; people author and review the contents.
+# This workflow writes no jig -- it creates the branch, its scaffold of
+# placeholders, and the label. The proposal issue becomes the set's own,
+# rather than a second one being opened. The jig arrives after, by pull
+# request from 'jig/<name>/initial', and is reviewed there.
+#
+# Creating a 'set/' branch is IRREVERSIBLE: the ruleset carries 'deletion'
+# and 'non_fast_forward' with zero bypass actors, so a misfire cannot be
+# undone without disabling it. Every precondition is therefore checked
+# before the ref is created, and nothing about the issue is touched until
+# the ref exists.
+#
+# Ref *creation* is exempt from the ruleset's 'pull_request' rule -- probed,
+# not assumed; see the evidence on soliplex/lab_bench#23. So the branch must
+# be born already pointing at its scaffold commit: this workflow gets one
+# shot and can never push a follow-up fix.
+name: set accepted
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write   # create refs; the repo-wide default is read-only
+  issues: write     # the proposal's labels and a comment
+
+jobs:
+  scaffold:
+    if: github.event.label.name == 'status:accepted'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create the set container
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+          REPO: ${{ github.repository }}
+        run: python .github/scripts/accept_set.py
