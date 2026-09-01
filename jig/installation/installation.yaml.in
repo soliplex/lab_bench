@@ -14,8 +14,9 @@ oidc_paths: [null]
 completion_paths: [null]
 quizzes_paths: [null]
 
-# 'haiku_rag_config_file' has no null escape, so the file must exist even
-# when this set uses no RAG. See haiku.rag.yaml, which is empty on purpose.
+# 'haiku_rag_config_file' has no null escape, so the file must exist.
+# It configures the RAG database the corpus fixture builds: embeddings,
+# chunking, and the search window. See haiku.rag.yaml.
 haiku_rag_config_file: ./haiku.rag.yaml
 
 # Relative to the *cwd*, not to this file -- so each cell runs in its own

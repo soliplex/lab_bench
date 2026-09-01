@@ -1,0 +1,400 @@
+{
+  "source": "docs-skill",
+  "model": "gemma4-26b",
+  "questions": [
+    {
+      "id": "0f7f551229d1",
+      "question": "What command is used to list published versions, newest first?",
+      "answer": "uv run scripts/skill_versions.py list",
+      "relevant_uris": [
+        "SKILL.md",
+        "references/docs-skill.md"
+      ],
+      "drafted_from": "SKILL.md"
+    },
+    {
+      "id": "3f809c2b1546",
+      "question": "What is the default value for provider_type?",
+      "answer": "\"ollama\"",
+      "relevant_uris": [
+        "references/config/agents.md",
+        "references/config/rag.md",
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/config/agents.md"
+    },
+    {
+      "id": "c19c46613a5e",
+      "question": "What is the name of the module-level dict that maps each feature's name to its registration?",
+      "answer": "AGUI_FEATURES_BY_NAME",
+      "relevant_uris": [
+        "references/config/agui.md"
+      ],
+      "drafted_from": "references/config/agui.md"
+    },
+    {
+      "id": "d27cb8ee8dcb",
+      "question": "What is the name of the file that holds metadata about the completion?",
+      "answer": "completion_config.yaml",
+      "relevant_uris": [
+        "references/config/completions.md",
+        "references/config/filesystem_layout.md",
+        "references/config/installation.md"
+      ],
+      "drafted_from": "references/config/completions.md"
+    },
+    {
+      "id": "c1ee9a5e473d",
+      "question": "Which async dialect is used to work with SQLite?",
+      "answer": "aiosqlite",
+      "relevant_uris": [
+        "references/config/dburis.md",
+        "references/config/installation.md"
+      ],
+      "drafted_from": "references/config/dburis.md"
+    },
+    {
+      "id": "e5f98a04576a",
+      "question": "What is the name of the secret used for the Postgres password in the provided examples?",
+      "answer": "POSTGRES_PASSWORD",
+      "relevant_uris": [
+        "references/config/dburis.md"
+      ],
+      "drafted_from": "references/config/dburis.md"
+    },
+    {
+      "id": "ad45a07b2cd9",
+      "question": "Which API should application code use to fetch configured values instead of using os.environ?",
+      "answer": "Installation.get_environment",
+      "relevant_uris": [
+        "references/config/environment.md",
+        "references/config/installation.md"
+      ],
+      "drafted_from": "references/config/environment.md"
+    },
+    {
+      "id": "dfc13bcf39c3",
+      "question": "What is the soliplex-cli sub-command used to load configuration and report resolved environment values?",
+      "answer": "audit environment",
+      "relevant_uris": [
+        "references/config/environment.md",
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/config/environment.md"
+    },
+    {
+      "id": "782599185440",
+      "question": "What marker style is used to resolve an installation environment value?",
+      "answer": "\"env:SOME_INSTALLATION_ENVIRONMENT_NAME\"",
+      "relevant_uris": [
+        "references/config/installation.md"
+      ],
+      "drafted_from": "references/config/installation.md"
+    },
+    {
+      "id": "5b288a75ed53",
+      "question": "What is the value passed to send_to_logfire in the default Soliplex configuration?",
+      "answer": "if-token-present",
+      "relevant_uris": [
+        "references/config/logfire.md"
+      ],
+      "drafted_from": "references/config/logfire.md"
+    },
+    {
+      "id": "bab681b92e9d",
+      "question": "Which argument is used to pass a YAML filename to start the Soliplex server for configuring how the application emits logs to standard output?",
+      "answer": "--log-config",
+      "relevant_uris": [
+        "references/config/logging.md",
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/config/logging.md"
+    },
+    {
+      "id": "158eb47c38e9",
+      "question": "Which environment variable can be set to capture the CLI audit trail?",
+      "answer": "SOLIPLEX_CLI_LOG_CONFIG",
+      "relevant_uris": [
+        "references/config/logging.md",
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/config/logging.md"
+    },
+    {
+      "id": "54fe24380988",
+      "question": "What string can be included in a subsection to empty its registry before registering the remaining entries in that list?",
+      "answer": "\"$$CLEAR$$\"",
+      "relevant_uris": [
+        "references/config/meta.md"
+      ],
+      "drafted_from": "references/config/meta.md"
+    },
+    {
+      "id": "78c3172148b2",
+      "question": "Which subsection clears both its own registry and the mcp_server_tool_wrappers registry?",
+      "answer": "tool_configs",
+      "relevant_uris": [
+        "references/config/meta.md"
+      ],
+      "drafted_from": "references/config/meta.md"
+    },
+    {
+      "id": "ea622fae66b4",
+      "question": "What function is used when the middleware_stack is omitted?",
+      "answer": "soliplex.main.default_middleware_stack()",
+      "relevant_uris": [
+        "references/config/middleware.md"
+      ],
+      "drafted_from": "references/config/middleware.md"
+    },
+    {
+      "id": "be12df601891",
+      "question": "Which secret is read by the session middleware for the cookie's signing key?",
+      "answer": "SESSION_MIDDLEWARE_TOKEN",
+      "relevant_uris": [
+        "references/config/middleware.md",
+        "references/config/secrets.md",
+        "references/server/index.md"
+      ],
+      "drafted_from": "references/config/middleware.md"
+    },
+    {
+      "id": "ecf933e55fca",
+      "question": "What will the Soliplex application use if oidc_client_pem_path is not configured?",
+      "answer": "systemwide default CA certificates",
+      "relevant_uris": [
+        "references/config/oidc_providers.md"
+      ],
+      "drafted_from": "references/config/oidc_providers.md"
+    },
+    {
+      "id": "1492a3a29d71",
+      "question": "What form should the client_secret take if it is not empty?",
+      "answer": "\"secret:{MYPROVIDER_CLIENT_SECRET}\"",
+      "relevant_uris": [
+        "references/config/oidc_providers.md"
+      ],
+      "drafted_from": "references/config/oidc_providers.md"
+    },
+    {
+      "id": "1d5e148decd2",
+      "question": "Which class is used to create instances of the haiku.rag client?",
+      "answer": "haiku.rag.client.HaikuRag",
+      "relevant_uris": [
+        "SKILL.md",
+        "references/config/rag.md"
+      ],
+      "drafted_from": "references/config/rag.md"
+    },
+    {
+      "id": "a2b58d5cff8d",
+      "question": "Which YAML key is used to override the sort key used when listing rooms?",
+      "answer": "_order",
+      "relevant_uris": [
+        "references/config/rooms.md"
+      ],
+      "drafted_from": "references/config/rooms.md"
+    },
+    {
+      "id": "19472bfd4a17",
+      "question": "What is the kind used for a secret source that generates a random string at process startup?",
+      "answer": "random_chars",
+      "relevant_uris": [
+        "references/config/meta.md",
+        "references/config/secrets.md",
+        "references/server/index.md"
+      ],
+      "drafted_from": "references/config/secrets.md"
+    },
+    {
+      "id": "ffc4850d6607",
+      "question": "Which soliplex-cli sub-command is used to load the configuration and report secrets that are not found?",
+      "answer": "audit secrets",
+      "relevant_uris": [
+        "references/config/secrets.md",
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/config/secrets.md"
+    },
+    {
+      "id": "9e04d1dc91b6",
+      "question": "Which endpoint does the HEALTHCHECK instruction poll?",
+      "answer": "GET /api/ok",
+      "relevant_uris": [
+        "references/docker.md"
+      ],
+      "drafted_from": "references/docker.md"
+    },
+    {
+      "id": "2fa991d87137",
+      "question": "What is the name of the script used to build the skill?",
+      "answer": "scripts/build_skill.py",
+      "relevant_uris": [
+        "references/docs-skill.md"
+      ],
+      "drafted_from": "references/docs-skill.md"
+    },
+    {
+      "id": "decc3f0cff80",
+      "question": "What is the name of the custom metric used to evaluate sales performance instead of standard profit?",
+      "answer": "Tiered Kinetic Value (TKV)",
+      "relevant_uris": [
+        "references/examples/room-thread-analysis/README.md",
+        "references/examples/room-thread-analysis/model.md"
+      ],
+      "drafted_from": "references/examples/room-thread-analysis/model.md"
+    },
+    {
+      "id": "e6ef6b6d3c2f",
+      "question": "What is the Platinum Tier Modifier value?",
+      "answer": "5.5",
+      "relevant_uris": [
+        "references/examples/room-thread-analysis/model.md"
+      ],
+      "drafted_from": "references/examples/room-thread-analysis/model.md"
+    },
+    {
+      "id": "a915c58cc328",
+      "question": "Which file contains information about the system architecture and features?",
+      "answer": "overview.md",
+      "relevant_uris": [
+        "SKILL.md",
+        "references/index.md"
+      ],
+      "drafted_from": "references/index.md"
+    },
+    {
+      "id": "010a2a314f16",
+      "question": "What is the Body Limit for the log ingestion endpoint?",
+      "answer": "1 MB",
+      "relevant_uris": [
+        "references/log-ingestion.md"
+      ],
+      "drafted_from": "references/log-ingestion.md"
+    },
+    {
+      "id": "fdae08df8199",
+      "question": "Which key in the installation YAML is used to suppress the auto-generated FastAPI span for the log ingestion endpoint?",
+      "answer": "excluded_urls",
+      "relevant_uris": [
+        "references/log-ingestion.md"
+      ],
+      "drafted_from": "references/log-ingestion.md"
+    },
+    {
+      "id": "b3f9beabc139",
+      "question": "What technology is used for the Soliplex Backend Server?",
+      "answer": "FastAPI with Python 3.12+",
+      "relevant_uris": [
+        "references/overview.md"
+      ],
+      "drafted_from": "references/overview.md"
+    },
+    {
+      "id": "7cc751747051",
+      "question": "Which state management is used in the Flutter client?",
+      "answer": "Riverpod",
+      "relevant_uris": [
+        "references/client.md",
+        "references/overview.md"
+      ],
+      "drafted_from": "references/overview.md"
+    },
+    {
+      "id": "2c7a44de8973",
+      "question": "What is the required embedding model for RAG when using Ollama?",
+      "answer": "qwen3-embedding:4b",
+      "relevant_uris": [
+        "references/prerequisites.md"
+      ],
+      "drafted_from": "references/prerequisites.md"
+    },
+    {
+      "id": "c235a22f3333",
+      "question": "What is the per-project directory for GitHub Copilot skills?",
+      "answer": ".github/skills",
+      "relevant_uris": [
+        "references/quickstart.md"
+      ],
+      "drafted_from": "references/quickstart.md"
+    },
+    {
+      "id": "0ba0a087dd1d",
+      "question": "Which skill scaffolds a complete, runnable Docker Compose stack?",
+      "answer": "soliplex-template",
+      "relevant_uris": [
+        "references/quickstart.md"
+      ],
+      "drafted_from": "references/quickstart.md"
+    },
+    {
+      "id": "b29004941144",
+      "question": "Where does the example installation of Soliplex expect the RAG database to be created?",
+      "answer": "db/rag/rag.lancedb",
+      "relevant_uris": [
+        "references/docker.md",
+        "references/prerequisites.md",
+        "references/rag.md"
+      ],
+      "drafted_from": "references/rag.md"
+    },
+    {
+      "id": "00e9d05fe07e",
+      "question": "Which specific project is required by the soliplex code to allow for queries against an existing LanceDB database?",
+      "answer": "haiku-rag-slim",
+      "relevant_uris": [
+        "references/rag.md"
+      ],
+      "drafted_from": "references/rag.md"
+    },
+    {
+      "id": "f1f79ac50460",
+      "question": "If the INSTALLATION_CONFIG_PATH is omitted in the serve command, which environment variable does it fall back to?",
+      "answer": "SOLIPLEX_INSTALLATION_PATH",
+      "relevant_uris": [
+        "references/server/cli.md"
+      ],
+      "drafted_from": "references/server/cli.md"
+    },
+    {
+      "id": "dcb45582e708",
+      "question": "What is the default URL where the server will be available?",
+      "answer": "http://localhost:8000",
+      "relevant_uris": [
+        "references/docker.md",
+        "references/prerequisites.md",
+        "references/server/index.md"
+      ],
+      "drafted_from": "references/server/index.md"
+    },
+    {
+      "id": "f7683cb16690",
+      "question": "What is the value of SSE_RECONNECT_POLL_INTERVAL_SECS?",
+      "answer": "0.2 s",
+      "relevant_uris": [
+        "references/server/sse_resume.md"
+      ],
+      "drafted_from": "references/server/sse_resume.md"
+    },
+    {
+      "id": "1f60392cc60e",
+      "question": "What is the format of the id prefix on every data frame?",
+      "answer": "{run_id}:{event_index}",
+      "relevant_uris": [
+        "references/server/sse_resume.md"
+      ],
+      "drafted_from": "references/server/sse_resume.md"
+    },
+    {
+      "id": "d94d029fc73d",
+      "question": "What is the default port that soliplex-tui-serve listens on?",
+      "answer": "8002",
+      "relevant_uris": [
+        "references/tui.md"
+      ],
+      "drafted_from": "references/tui.md"
+    }
+  ],
+  "release": "v0.78.1",
+  "sha256": "8f2b1a6e7fc33b935bb8f6dd982d937b1ab3f4333f610f9eab69379738e3e1b5"
+}

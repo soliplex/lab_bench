@@ -1,6 +1,51 @@
-# Intentionally empty.
+# haiku-rag configuration for the 'retrieval_failures' jig.
 #
-# 'haiku_rag_config_file' in installation.yaml has no null escape: the key
-# must point at a file that exists, even for a set that uses no RAG at all.
-# Deleting this file breaks the installation load with an error that does
-# not mention it.
+# The corpus fixture builds against this file, and a cell reads it
+# through 'haiku_rag_config_file' in installation.yaml. An experiment
+# that varies one of these values overrides it in its own configuration.
+#
+# Services run on 'bizon'. 'biggysmalls' runs the same Docling Serve
+# 1.31.0 and a reranker, but no embeddings endpoint.
+
+environment: development
+
+storage:
+  # Set per build by the corpus fixture, which passes an explicit
+  # database path. Empty here so that a cell cannot fall back to a
+  # shared default.
+  data_dir: ""
+
+embeddings:
+  model:
+    provider: vllm
+    name: nvidia/llama-nemotron-embed-vl-1b-v2
+    base_url: http://bizon:11438/v1
+    # The endpoint returns 2048-wide vectors.
+    vector_dim: 2048
+
+# No reranking. bizon:11434 serves
+# 'nvidia/llama-nemotron-rerank-vl-1b-v2' for an experiment that wants
+# it.
+reranking:
+  model: null
+
+qa:
+  model:
+    provider: openai
+    name: gemma4-26b
+    base_url: http://bizon:11432/v1
+    temperature: 0.0
+
+processing:
+  chunk_size: 256
+  converter: docling-serve
+  chunker: docling-serve
+  chunker_type: hybrid
+
+search:
+  # haiku-rag's own default is 5.
+  limit: 20
+
+providers:
+  docling_serve:
+    base_url: http://bizon:5001
