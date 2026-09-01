@@ -1,7 +1,8 @@
 # `retrieval_failures` jig
 
-REPLACE ME: one line on what this set measures and why it needs apparatus
-of its own.
+Apparatus for measuring what retrieval returned: the documents and
+chunks a search produced, their order, and where the document that
+should have answered a question fell in that order.
 
 ## What it varies
 
@@ -34,13 +35,28 @@ uv run python -m retrieval_failures report             <work>
 and an interrupted run resumes. `<work>` is disposable -- nothing in it is
 committed.
 
-## Why the installation is ours
+## The installation
 
-REPLACE ME, or delete. The template ships an `installation.yaml.in` with
-the traps already worked around: `[null]` entries for `oidc_paths` /
-`completion_paths` / `quizzes_paths`, a `haiku.rag.yaml` that must exist
-while being empty, and cwd-relative sqlite URIs so cells do not share
-state. Say here what else this set's installation needs to be its own.
+The scaffold's `installation.yaml.in` carries `[null]` entries for
+`oidc_paths` / `completion_paths` / `quizzes_paths`, and cwd-relative
+sqlite URIs so each cell runs in its own directory.
+
+`haiku.rag.yaml` configures the RAG database the fixtures build:
+
+| key | value |
+| --- | --- |
+| `embeddings.model` | `nvidia/llama-nemotron-embed-vl-1b-v2` at `bizon:11438`, `vector_dim: 2048` |
+| `processing.converter`, `.chunker` | `docling-serve` at `bizon:5001` |
+| `processing.chunk_size` | 256 |
+| `reranking.model` | `null` |
+| `search.limit` | 20 |
+| `qa.model` | `gemma4-26b` at `bizon:11432` |
+| `storage.data_dir` | empty; set per build |
+
+An experiment that varies one of these sets it in its own configuration.
+
+`bizon` carries the embeddings endpoint. `biggysmalls` runs the same
+Docling Serve 1.31.0 and a reranker, but nothing that embeds.
 
 ## Preconditions
 
@@ -59,5 +75,74 @@ the reason these are assertions rather than notes.
 
 ## Fixture
 
-REPLACE ME: the generator, its seed, and the expected value a scorer
-checks for. Commit the generator, never the generated fixture.
+Two fixtures. `questions.json` names, per question, the documents the
+corpus must contain.
+
+### `fixtures/corpus.py`
+
+Builds a LanceDB database from a named source.
+
+`docs-skill` is the `soliplex-docs` skill from soliplex **v0.78.1**,
+pinned by URL and sha256: 35 markdown files, ~36k words of real
+documentation.
+
+`synthetic` generates documents from a seed, for a corpus that needs no
+download and whose content is known exactly.
+
+```
+uv run python fixtures/corpus.py docs-skill <dest>
+uv run python fixtures/corpus.py synthetic  <dest>
+uv run python fixtures/corpus.py docs-skill <dest> --list
+uv run python fixtures/corpus.py docs-skill <dest> --count <token>
+```
+
+`--list` prints each document and its word count; `--count` prints
+per-document occurrences of a token. Neither ingests anything.
+
+Each document is ingested under its path as `uri`, which is what a
+search result reports as `document_uri`.
+
+A build writes `manifest.json` beside the database, listing every
+document ingested and recording the release or seed it came from. The
+manifest is written after ingestion completes; the database is removed
+if ingestion fails.
+
+Ingestion retries a dropped connection with backoff, then raises. The
+embedding endpoint drops one intermittently.
+
+### `fixtures/questions.py`
+
+Each question carries `relevant_uris`: the documents that state its
+answer, so a scorer can ask where they ranked.
+
+It is a set rather than a single document. An answer is frequently
+stated in more than one place -- a command in its own reference and
+again in a tutorial -- and treating one of those as the correct source
+would score a legitimate retrieval as a miss. The document a question
+was drafted from is recorded separately as `drafted_from`, and carries
+no authority.
+
+Gold sets are built by verbatim containment across the whole corpus,
+including documents too short to draft questions from. A question whose
+answer appears in more than `MAX_RELEVANT` (3) documents is dropped at
+generation time: an answer stated across most of the corpus cannot
+discriminate retrieval. Containment is crude -- it cannot see a
+paraphrase -- which is what that cap exists to bound.
+
+Both the generator and its output are committed. Generation runs a model
+over the corpus and is not reproducible from a seed, so committing
+`questions.json` is what keeps separate runs comparable. This departs
+from the praxis rule to commit the generator alone.
+
+Question ids are derived from the question text, so a regeneration diffs
+only what changed. A drafted answer that does not appear verbatim in its
+source document is dropped at generation time.
+
+```
+uv sync --group fixtures
+uv run python fixtures/questions.py generate
+uv run python fixtures/questions.py list
+```
+
+`load()` reads the committed file, imports no model client, and refuses
+a question set generated against a different corpus hash.

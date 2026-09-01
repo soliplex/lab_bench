@@ -9,11 +9,22 @@ dependencies = [
     # the apparatus that measured it is identified too, so the version in
     # use gets recorded on the experiment issue.
     "soliplex-lab-harness @ git+https://github.com/soliplex/lab_harness@v0.4",
+    # The corpus fixture builds a LanceDB database, which is haiku-rag's
+    # job. Pinned to the range soliplex 0.78.1 itself declares: the jig
+    # writes a database that a cell's soliplex then reads, and two
+    # different haiku-rag majors do not have to agree about its layout.
+    "haiku.rag-slim>=0.78.0,<0.79",
 ]
 
 [dependency-groups]
 dev = [
     "ruff>=0.6",
+]
+# Regenerating 'questions.json' runs a model over the corpus. That is a
+# deliberate act, not something a run does, so what it needs is not a
+# dependency of the jig -- 'questions.load()' is stdlib-only on purpose.
+fixtures = [
+    "pydantic-ai>=1.0",
 ]
 
 [build-system]
@@ -32,3 +43,9 @@ select = ["F", "E", "B", "UP", "I", "PD", "TRY", "PT"]
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.logfire]
+# The fixture builders import haiku-rag, which is instrumented. Nothing
+# here is a measured turn -- the harness configures logfire for those --
+# so the "not configured" warning is noise on every ingest.
+ignore_no_config = true
