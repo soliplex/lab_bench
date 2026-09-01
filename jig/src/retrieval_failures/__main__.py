@@ -1,17 +1,20 @@
 """Drive the experiment set.
 
     build              <work>              materialize environments and cells
-    run                <work> --trials N   drive trials, topping up to N
+    run                <work> --trials N   run trials, topping up to N
     verify-assumptions <work>              assert the preconditions
     report             <work>              score what has been recorded
 
-The intended order spends no turn twice:
+The intended order spends nothing twice:
 
     build <work>
-    run   <work> --trials 1        one smoke turn
+    run   <work> --trials 1        one trial
     verify-assumptions <work>      before spending the rest
-    run   <work> --trials 20       tops up; the smoke turn counts
+    run   <work> --trials 20       tops up; the first trial counts
     report <work>
+
+There is no room and no installation: a cell measures search directly,
+or a bare haiku-rag capability above it. See #36.
 
 **'build' takes the matrix; everything else reads it back** from the work
 directory, so a run cannot silently disagree with what was built.

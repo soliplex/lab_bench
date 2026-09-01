@@ -31,17 +31,20 @@ uv run python -m retrieval_failures run                <work> --trials 20
 uv run python -m retrieval_failures report             <work>
 ```
 
-`--trials` is a **target, not a count**: the smoke turn counts toward N,
-and an interrupted run resumes. `<work>` is disposable -- nothing in it is
-committed.
+`--trials` is a **target, not a count**: an interrupted run resumes.
+`<work>` is disposable -- nothing in it is committed.
 
-## The installation
+Search is deterministic (see `SET.md`), so a cell that only searches
+needs one trial; the target matters where a model is in the loop.
 
-The scaffold's `installation.yaml.in` carries `[null]` entries for
-`oidc_paths` / `completion_paths` / `quizzes_paths`, and cwd-relative
-sqlite URIs so each cell runs in its own directory.
+## Configuration
 
-`haiku.rag.yaml` configures the RAG database the fixtures build:
+There is no soliplex installation. This jig measures `HaikuRAG.search()`
+and, above it, a bare haiku-rag capability -- neither needs a room, and
+the room layer is out of scope (see [#36]).
+
+`haiku.rag.yaml` configures the RAG database the fixtures build, and is
+loaded directly by them rather than through an installation:
 
 | key | value |
 | --- | --- |
@@ -57,6 +60,13 @@ An experiment that varies one of these sets it in its own configuration.
 
 `bizon` carries the embeddings endpoint. `biggysmalls` runs the same
 Docling Serve 1.31.0 and a reranker, but nothing that embeds.
+
+Measurement goes through the Python API. The `haiku-rag` CLI's `search`
+prints to a console and returns nothing, so ranks and scores are not
+recoverable from it; the CLI is for `init`, `create-index`, `migrate` and
+`info`.
+
+[#36]: https://github.com/soliplex/lab_bench/issues/36
 
 ## Preconditions
 

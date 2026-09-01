@@ -31,7 +31,7 @@ class HarnessPinMissing(Exception):
         super().__init__(
             f"{path} declares no 'soliplex-lab-harness' dependency; a cell "
             "environment needs the same harness the jig itself was built "
-            "against, because a trial is driven in process."
+            "against, because a cell records and scores in process."
         )
 
 
