@@ -145,11 +145,16 @@ container when the proposal is accepted:
    once the scope has settled -- nothing is lost when a discussion ends in
    no set.
 2. **Acceptance is adding `status:accepted`.** A workflow creates
-   `set/<name>` already pointing at its scaffold commit, mints all three
-   of the set's labels -- `set:`, `jig:` and `exp:` -- and puts
-   `set:<name>` on the proposal, which becomes the set's own issue, since
-   the scope it argued is exactly what that label is for. Declining is
-   closing the proposal `status:declined`, with no branch and no labels.
+   `set/<name>` already pointing at its scaffold commit, renders the
+   proposal's fields into `SET.md` on that branch, mints all three of the
+   set's labels -- `set:`, `jig:` and `exp:` -- and puts `set:<name>` on
+   the proposal, which becomes the set's own issue. Declining is closing
+   the proposal `status:declined`, with no branch and no labels.
+
+   `SET.md` is the set's charter, and it is the record: the phenomenon,
+   why the set needs apparatus, the cost, the preconditions, and an
+   `Amendments` section appended to as scope decisions land. A change to
+   it arrives by pull request like any other change to the branch.
 
    The proposal also gains one line at the top: its branch, and the
    `exp:` and `jig:` labels as bare URLs, which GitHub renders as the
@@ -315,6 +320,9 @@ only ones where the automation does anything.
    record, not a mistake to tidy away.
 
 ### Why the record is a file, not the issue
+
+This holds for a set's `SET.md` as much as for an experiment's
+`EXPERIMENT.md`, and for the same reasons.
 
 `set/` and `exp/` branches cannot be deleted or force-pushed; issues have
 no equivalent. A clone carries every branch and no comments, so handing
