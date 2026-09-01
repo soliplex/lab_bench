@@ -112,14 +112,15 @@ state nobody ever shipped.
 | praxis work | `praxis/<topic>` | merges into `main` | delete after merge |
 | experiment set | `set/<name>` | never merged to `main` | archival |
 | jig work | `jig/<set>/<topic>` | merges into `set/<name>` | delete after merge |
+| set documentation | `docs/<set>/<topic>` | merges into `set/<name>` | delete after merge |
 | experiment | `exp/<set>/<slug>` | never merged anywhere | archival |
 
 Rules:
 
-- A PR against `main` never originates from a `set/`, `jig/`, or `exp/`
-  branch.
-- A `set/` branch changes only by PR from a `jig/` branch, so jig evolution
-  is reviewed and visible.
+- A PR against `main` never originates from a `set/`, `jig/`, `docs/`, or
+  `exp/` branch.
+- A `set/` branch changes only by PR from a `jig/` or `docs/` branch, so
+  both the apparatus and the charter evolve in review.
 - An `exp/` branch is committed to directly. That is the lab notebook; review
   would make it unusable.
 - `set/` and `exp/` branches are **never deleted and never force-pushed**.
@@ -210,6 +211,7 @@ stay in step with the branches.
 | --- | --- | --- |
 | `exp:<set>` | one experiment | `exp/<set>/<slug>` |
 | `jig:<set>` | that set's jig | `jig/<set>/<topic>` |
+| `docs:<set>` | that set's documentation, including `SET.md` | `docs/<set>/<topic>` |
 | `set:<set>` | the set itself, and its scope | `set/<set>` |
 | `praxis` | these documents | `praxis/<topic>` |
 
@@ -218,6 +220,10 @@ topic is dropped, which is what lets every experiment in a set share one
 label, and so what makes the label query for a set separate experiments run
 from work on the apparatus. `praxis/<topic>` is the exception: praxis work
 is not scoped to a set, so the label is bare `praxis`.
+
+`docs:<set>` is named for a class of files rather than for one, because a
+long-lived set may grow more documentation than `SET.md` alone. A label
+tied to a single filename would age badly.
 
 **A set's issue stays open.** An experiment finishes when its trials are run
 and its findings recorded, so its issue closes; a set tests a *class* of
@@ -281,7 +287,8 @@ are that something is overlooked or the whole thing stalls.
 
 ### Close the issue by hand
 
-A `jig/` pull request targets a `set/` branch, never the default branch.
+A `jig/` or `docs/` pull request targets a `set/` branch, never the
+default branch.
 GitHub only forms a development link -- and only auto-closes -- for
 pull requests into the default branch, so **nothing will close the issue for
 you**. Close it when you merge.

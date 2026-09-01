@@ -75,6 +75,11 @@ def remove_label(repo: str, issue: str, label: str) -> None:
 SET_LABELS = (
     ("set:{name}", "5319e7",
      "The {name} set itself, and its scope"),
+    # Colour and wording match the two labels created by hand for the
+    # sets that predate this, so a newly accepted set gets the same
+    # label rather than a near-miss.
+    ("docs:{name}", "d43fc5",
+     "Updates to scope or documentation for the `{name}` experiment set."),
     ("jig:{name}", "0e8a16",
      "Work on the {name} jig (branch prefix jig/{name}/)"),
     # Dark purple, not red: red reads as danger, and an experiment is

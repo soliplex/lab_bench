@@ -28,12 +28,17 @@ Check first:
 | --- | --- | --- |
 | `main` | edit praxis docs, `.github/`, and `set-template/` on a `praxis/<topic>` branch, then PR to `main` | commit experiment code, jigs, or data |
 | `praxis/<topic>` | commit praxis-doc changes; PR into `main` | commit experiment code, jigs, or data |
-| `set/<name>` | read; branch to `jig/...` for changes | commit directly; open a PR to `main` |
+| `set/<name>` | read; branch to `jig/...` or `docs/...` for changes | commit directly; open a PR to `main` |
 | `jig/<set>/<topic>` | commit jig changes; PR **into** the `set/` branch | PR to `main` |
+| `docs/<set>/<topic>` | commit `SET.md` and other set documentation; PR **into** the `set/` branch | PR to `main`; change the jig |
 | `exp/<set>/<slug>` | commit results and experiment-local code directly | open a PR anywhere |
 
-A branch off a `set/` branch is mergeable only if it is named `jig/...`. An
-`exp/...` branch is never the basis for a pull request.
+A branch off a `set/` branch is mergeable only if it is named `jig/...` or
+`docs/...`. An `exp/...` branch is never the basis for a pull request.
+
+**`jig/` is for apparatus, `docs/` is for what the set is for.** A change
+to `SET.md` is `docs/`; a change under `jig/` is `jig/`. A branch that
+needs both is doing two things.
 
 **`set-template/` is not a jig**, which is why `main` may carry it. Every
 file in it ends `.tmpl`, so nothing there is importable, buildable, or
@@ -78,8 +83,8 @@ branch landed in a `jig/` commit and had to be amended out.
 
 ### Tidying up
 
-- When a transient branch (`praxis/`, `jig/`) is deleted on `origin` after
-  its pull request merges, delete its worktree.
+- When a transient branch (`praxis/`, `jig/`, `docs/`) is deleted on
+  `origin` after its pull request merges, delete its worktree.
 - When an experiment's issue is closed, delete the experiment worktree **and
   the local branch**. The branch on `origin` is the archive, and it is
   protected against deletion; a local copy is just a second thing to keep
@@ -98,13 +103,14 @@ write the implementation and the issue in the same breath.
 the pull request mostly links to it; the commit message is terse. Findings,
 tables, and evidence belong in one place, not in all three.
 
-**Label to match the branch:** `exp:<set>`, `jig:<set>`, `set:<set>`,
-`praxis`. A label is the branch's first two segments joined with `:`, so a
+**Label to match the branch:** `exp:<set>`, `jig:<set>`, `docs:<set>`,
+`set:<set>`, `praxis`. A label is the branch's first two segments joined
+with `:`, so a
 set's experiments and jigs all carry that set's name; `praxis/<topic>` is
 the exception, labelled bare `praxis`.
 
-**Close the issue by hand.** A `jig/` pull request targets a `set/`
-branch, and GitHub only auto-closes for pull requests into the
+**Close the issue by hand.** A `jig/` or `docs/` pull request targets a
+`set/` branch, and GitHub only auto-closes for pull requests into the
 default branch. Nothing will close it for you. Keep `Closes #N` in the pull
 request body regardless -- it records intent -- and note that the keyword
 does nothing in a commit message alone.
