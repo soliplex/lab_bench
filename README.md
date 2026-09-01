@@ -25,6 +25,7 @@ never vendors one.
 | `main` | praxis documents only | PRs to `main` change praxis, nothing else |
 | `set/<name>` | an experiment set and its measurement jig(s) | **never** merged to `main` |
 | `jig/<set>/<topic>` | in-progress jig work | merges **into** its `set/` branch |
+| `docs/<set>/<topic>` | a set's documentation, including its `SET.md` | merges **into** its `set/` branch |
 | `exp/<set>/<slug>` | one experiment: local jig bits, data, results | **never** merged anywhere |
 
 `set/` and `exp/` branches are the archive. They are never merged and never
@@ -40,8 +41,9 @@ There is no index file. The issue tracker is the index:
   is proposed and accepted rather than branched by hand, and accepting it
   is what creates `set/<name>`, its scaffold, and its label
 - issues carry a label mirroring their branch kind -- `exp:<set>`,
-  `jig:<set>`, `set:<set>`, `praxis` -- so a set's listing separates
-  experiments run from work on the apparatus
+  `jig:<set>`, `docs:<set>`, `set:<set>`, `praxis` -- so a set's listing
+  separates experiments run from work on the apparatus, and both from what
+  the set is for
 - a `status:` label says where a proposal stands -- `proposed`, `accepted`,
   `declined` -- which is a different question from what kind of work it is
 

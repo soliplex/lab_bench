@@ -36,7 +36,7 @@ PACKAGE = "Jig package name"
 
 
 def hub_line(repo: str, name: str) -> str:
-    """The set's branch and its two label indexes, as one line.
+    """The set's branch and its three label indexes, as one line.
 
     The label links are **bare URLs on purpose**: GitHub renders an
     unadorned label URL as the label chip -- its colour, its description
@@ -58,8 +58,9 @@ def hub_line(repo: str, name: str) -> str:
     base = f"https://github.com/{repo}"
     return (
         f"[`set/{name}`]({base}/tree/set/{name})"
-        f" · {base}/labels/exp%3A{name}"
+        f" · {base}/labels/docs%3A{name}"
         f" · {base}/labels/jig%3A{name}"
+        f" · {base}/labels/exp%3A{name}"
     )
 
 
@@ -141,7 +142,7 @@ def main() -> int:
         + ".\n\n"
         "This issue is now the set's hub. Its scope was rendered into "
         "`SET.md` on the branch, which is where scope is recorded from "
-        "here; amend it by pull request.\n\n"
+        f"here; amend it by pull request from `docs/{name}/<topic>`.\n\n"
         f"- branch: `set/{name}`\n"
         f"- jig package: `{package}`\n"
         f"- harness pinned at `{harness}`, the latest release when this "
