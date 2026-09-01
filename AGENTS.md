@@ -43,7 +43,14 @@ are committing a jig to `main`.
 
 **You do not create a `set/` branch by hand.** It is created by the
 `set accepted` workflow when a set proposal is labelled `status:accepted`,
-and it cannot be deleted afterwards.
+already holding its rendered `SET.md`, and it cannot be deleted
+afterwards.
+
+**`SET.md` is the set's record, not its issue.** It carries the
+phenomenon, why the set needs apparatus, the cost and the preconditions,
+plus an `Amendments` section for scope decisions as they land. Amend it by
+pull request into the `set/` branch; do not restate scope in the issue and
+leave the file behind.
 
 ## One worktree per branch
 

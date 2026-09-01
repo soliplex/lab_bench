@@ -7,10 +7,11 @@ branch cannot be deleted without disabling the ruleset, so every
 precondition is checked before the ref is created, and nothing about the
 issue is touched until the ref exists.
 
-**The proposal becomes the set's tracking issue.** It already holds the
-scope, the cost, and the preconditions, which is exactly what 'set:<name>'
-is for; opening a second issue would put the reasoning outside its own
-set's label query and leave two things to keep in step.
+**The proposal becomes the set's tracking issue**, and its fields are
+rendered into 'SET.md' on the set's branch. The issue is the hub and the
+place to discuss; the file is the record, because a branch that cannot be
+force-pushed keeps what was argued and a tracker does not. Opening a
+second issue would put the discussion outside its own set's label query.
 
 The shared plumbing -- forge calls, refusal, form reading -- is in
 'forge' and 'issue_form', and is used by the experiment acceptance too.
@@ -26,6 +27,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import forge  # noqa: E402
 import issue_form  # noqa: E402
+import render_set  # noqa: E402
 import render_set_scaffold  # noqa: E402
 
 ROUTING = "proposal:set"
@@ -100,6 +102,10 @@ def main() -> int:
         name = issue_form.line(body, SET_NAME)
         package = issue_form.line(body, PACKAGE)
         harness = check(repo, issue, labels, name, package)
+        # Rendered before anything irreversible: a proposal missing a
+        # required field must be refused, not answered with a branch
+        # that cannot be deleted and a charter that is half a file.
+        charter = render_set.render(body, issue, name, package)
     except (forge.Refused, issue_form.FieldMissing) as exc:
         return forge.refuse(repo, issue, exc)
 
@@ -108,6 +114,7 @@ def main() -> int:
     rendered = render_set_scaffold.render(
         root / render_set_scaffold.TEMPLATE, name, package, harness
     )
+    rendered["SET.md"] = charter
     commit = forge.commit_files(
         repo,
         "heads/main",
@@ -132,8 +139,9 @@ def main() -> int:
         f"`{commit[:8]}`, and its labels: "
         + ", ".join(f"`{label}`" for label in minted)
         + ".\n\n"
-        "This issue is now the set's, where its scope is argued and "
-        "recorded.\n\n"
+        "This issue is now the set's hub. Its scope was rendered into "
+        "`SET.md` on the branch, which is where scope is recorded from "
+        "here; amend it by pull request.\n\n"
         f"- branch: `set/{name}`\n"
         f"- jig package: `{package}`\n"
         f"- harness pinned at `{harness}`, the latest release when this "

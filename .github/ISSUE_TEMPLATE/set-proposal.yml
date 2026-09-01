@@ -16,10 +16,13 @@ body:
         discussion ends in no set at all.
 
         **Acceptance is adding `status:accepted`.** A workflow then creates
-        `set/<name>` with its scaffold, mints `set:<name>`, and applies it
-        here -- this issue then *is* the set's, where its scope is
-        argued and recorded. **That branch cannot be deleted afterwards**
-        -- the ruleset forbids it -- so the name is worth getting right.
+        `set/<name>` with its scaffold, renders the fields below into
+        `SET.md` on that branch, mints `set:<name>`, and applies it here.
+        This issue then *is* the set's hub; **`SET.md` is the record**, and
+        scope is amended there by pull request. **That branch cannot be
+        deleted afterwards** -- the ruleset forbids it -- so the name is
+        worth getting right, and so is what you write below: it lands as a
+        file.
 
         Declining is closing this issue as `status:declined`. No branch,
         no label.
