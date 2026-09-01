@@ -19,6 +19,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ruff>=0.6",
+    "pytest>=8",
 ]
 # Regenerating 'questions.json' runs a model over the corpus. That is a
 # deliberate act, not something a run does, so what it needs is not a
@@ -33,6 +34,9 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-name = "retrieval_failures"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 79
