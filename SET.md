@@ -124,6 +124,24 @@ record.
 The room layer is out of scope; see [#36]. The scope above against
 neighbouring efforts was recorded per [#37].
 
+An ANN index is not an arm for this set. Asked upstream rather than built
+here, per [#37]'s routing rule, and answered in [haiku.rag#592] on
+corpora three orders of magnitude larger than this set's: an `IVF_PQ`
+index moves retrieval MAP by +0.0001 at 70k and at 121k chunks, and by
+-0.0044 at 426k. None of those benchmark databases carried one, so the
+published figures describe exact search.
+
+The 256-chunk figure is `IVF_PQ`'s training minimum, not the point at
+which an index earns its cost; that is beyond 100k chunks, which is also
+what `haiku-rag doctor` recommends. Exact search runs about 0.5 ms per
+1k chunks, measured linear, so a corpus of this set's size has nothing
+to gain.
+
+Two things follow. The corpus-size pressure that arm created is gone.
+And the determinism measured for exact search holds for the corpora this
+set will use, without a "re-check under ANN" caveat.
+
 [#27]: https://github.com/soliplex/lab_bench/issues/27
 [#36]: https://github.com/soliplex/lab_bench/issues/36
 [#37]: https://github.com/soliplex/lab_bench/issues/37
+[haiku.rag#592]: https://github.com/ggozad/haiku.rag/issues/592
