@@ -42,7 +42,7 @@ from . import build as build_module
 from . import cells as cells_module
 from . import report as report_module
 from . import verify_assumptions
-from .fixture import write_fixture
+from .fixtures import orders
 
 
 def selected(
@@ -124,7 +124,9 @@ def do_verify_assumptions(
 
 def do_report(work: pathlib.Path) -> int:
     matrix = cells_module.load_matrix(work)
-    expected = write_fixture(work / "expected")
+    # Write the orders CSV to a throwaway location in order to derive
+    # the scalar 'expected': `report.report` then verifies it.
+    expected = orders.write(work / "expected")
     print(report_module.report(work, matrix, expected))
     return 0
 
