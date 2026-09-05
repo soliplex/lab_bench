@@ -61,17 +61,27 @@ leave the file behind.
 
 Do not `git switch` in the `main` worktree. It stays on `main`. Every other
 branch of open work gets **its own worktree**, named for the branch with the
-slashes flattened:
+slashes flattened to dashes -- **every** segment, including the set:
 
-    lab_bench/main                        main
-    lab_bench/set-soliplex-room-behavior  set/soliplex-room-behavior
-    lab_bench/jig-harness-0.1.1           jig/soliplex-room-behavior/harness-0.1.1
-    lab_bench/exp-defer-loading-3x2       exp/soliplex-room-behavior/defer-loading-3x2
+    lab_bench/main                                          main
+    lab_bench/set-retrieval-failures                        set/retrieval-failures
+    lab_bench/jig-retrieval-failures-search                 jig/retrieval-failures/search
+    lab_bench/exp-soliplex-room-behavior-defer-loading-3x2  exp/soliplex-room-behavior/defer-loading-3x2
+
+Do not shorten a name by dropping the set segment, even where only one set
+is checked out: the point of the rule is that the directory name maps back
+to exactly one branch, and a set gains experiments for as long as it lives.
+The names get long. That is the cost of never having to guess.
 
 Create one with, from any existing worktree:
 
     git worktree add ../<flattened-name> <branch>
-    git worktree add ../<flattened-name> -b <new-branch> main
+    git worktree add ../<flattened-name> -b <new-branch> <base>
+
+`<base>` is `main` for a `praxis/` branch and the set branch for a `jig/`
+or `docs/` one. `set/` and `exp/` branches are made by the forge, not by
+you, so their worktrees are always added for a branch that already exists
+-- `git fetch` first, and no `-b`.
 
 Run `git worktree list` before assuming which tree you are in.
 
