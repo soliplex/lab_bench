@@ -237,7 +237,7 @@ def build_cell(
     work: pathlib.Path,
     trials: int,
 ) -> pathlib.Path:
-    from .fixture import write_fixture
+    from .fixtures import orders
 
     root = work / "cells" / cell.name
     if root.exists():
@@ -251,7 +251,7 @@ def build_cell(
     build_sandbox_environments(
         template / "environments", root / "environments"
     )
-    expected = write_fixture(root / "uploads" / "rooms" / "workbench")
+    expected = orders.write(root / "uploads" / "rooms" / "workbench")
 
     spec = {
         "cell": cell.name,

@@ -71,5 +71,16 @@ standing.
 
 Reconstructed and committed, per [#43].
 
+### 2026-09-05
+
+The `orders` fixture generator moved from `jig/fixtures/orders.py` into
+the jig package, as `jig/src/room_behavior/fixtures/orders.py`, and the
+by-path loader that reached it was deleted. The generator's own code is
+unchanged, so `orders.csv` is byte-identical and every recorded result
+remains scored against the same Southeast total of 40935.89. Experiments
+archived before this date carry their own copy of the jig at the older
+layout; the difference is where the generator lives, not what it
+produces.
+
 [#31]: https://github.com/soliplex/lab_bench/issues/31
 [#43]: https://github.com/soliplex/lab_bench/issues/43

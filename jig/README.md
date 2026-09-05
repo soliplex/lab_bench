@@ -172,10 +172,13 @@ for retries rather than a clean sheet.
 
 ## Fixture
 
-`fixtures/orders.py` writes `orders.csv`: seed 1319, 60 rows, 17 of them
-`Southeast`, expected Southeast total **40935.89**. It raises rather than
-warns if the total ever changes, because every recorded result is scored
-against that number.
+`src/room_behavior/fixtures/orders.py` writes `orders.csv`: seed 1319, 60
+rows, 17 of them `Southeast`, expected Southeast total **40935.89**. It
+raises rather than warns if the total ever changes, because every recorded
+result is scored against that number.
 
 Committed as a generator rather than a CSV: smaller, self-documenting, and
 there is no question about whether the data may be published.
+
+Regenerate it with `uv run python -m room_behavior.fixtures.orders
+<destination>`.
