@@ -88,7 +88,7 @@ the reason these are assertions rather than notes.
 Two fixtures. `questions.json` names, per question, the documents the
 corpus must contain.
 
-### `fixtures/corpus.py`
+### `src/retrieval_failures/fixtures/corpus.py`
 
 Builds a LanceDB database from a named source.
 
@@ -100,10 +100,10 @@ documentation.
 download and whose content is known exactly.
 
 ```
-uv run python fixtures/corpus.py docs-skill <dest>
-uv run python fixtures/corpus.py synthetic  <dest>
-uv run python fixtures/corpus.py docs-skill <dest> --list
-uv run python fixtures/corpus.py docs-skill <dest> --count <token>
+uv run python -m retrieval_failures.fixtures.corpus docs-skill <dest>
+uv run python -m retrieval_failures.fixtures.corpus synthetic  <dest>
+uv run python -m retrieval_failures.fixtures.corpus docs-skill <dest> --list
+uv run python -m retrieval_failures.fixtures.corpus docs-skill <dest> --count <token>
 ```
 
 `--list` prints each document and its word count; `--count` prints
@@ -120,7 +120,7 @@ if ingestion fails.
 Ingestion retries a dropped connection with backoff, then raises. The
 embedding endpoint drops one intermittently.
 
-### `fixtures/questions.py`
+### `src/retrieval_failures/fixtures/questions.py`
 
 Each question carries `relevant_uris`: the documents that state its
 answer, so a scorer can ask where they ranked.
@@ -150,8 +150,8 @@ source document is dropped at generation time.
 
 ```
 uv sync --group fixtures
-uv run python fixtures/questions.py generate
-uv run python fixtures/questions.py list
+uv run python -m retrieval_failures.fixtures.questions generate
+uv run python -m retrieval_failures.fixtures.questions list
 ```
 
 `load()` reads the committed file, imports no model client, and refuses

@@ -16,17 +16,26 @@ import pathlib
 from soliplex_lab_harness import records
 from soliplex_lab_harness import scoring
 
+from .fixtures import ExpectedType
 
-def checks(expected: str) -> list[scoring.Check]:
-    """The questions this set asks of one trial."""
+
+def checks(expected: ExpectedType) -> list[scoring.Check]:
+    """The questions this set asks of one trial.
+
+    'expected' is whatever 'do_report' got from this set's fixtures.
+    Required rather than defaulted: a scorer that silently checks
+    against nothing still prints a plausible table.
+    """
     return [
         scoring.succeeded(),
-        scoring.response_contains(expected),
-        # REPLACE ME: the checks particular to this set.
+        # REPLACE ME: the checks particular to this set. Not
+        # 'scoring.response_contains(expected)' -- this set's
+        # expectation is per question, and a search returns a ranked
+        # list rather than a response to match against.
     ]
 
 
-def report(work: pathlib.Path, chosen, expected: str) -> str:
+def report(work: pathlib.Path, chosen, expected: ExpectedType) -> str:
     active = checks(expected)
     tallies = []
     for cell in chosen:

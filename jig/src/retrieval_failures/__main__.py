@@ -31,14 +31,24 @@ from soliplex_lab_harness import preconditions
 from . import cells as cells_module
 from . import report as report_module
 from . import verify_assumptions
-from .fixture import write_fixture
+from .fixtures import ExpectedType
 
 
 def do_report(work: pathlib.Path) -> int:
+    """Score what has been recorded.
+
+    What a trial is scored *against* comes from this set's fixtures:
+    'from .fixtures import questions', then ask that module. This set's
+    expectation is per question rather than one string, so the shape is
+    settled alongside the scoring path -- 'ExpectedType' says 'type(None)'
+    until then, and this is where it is derived once it does not.
+
+    Derive it from the generator rather than declaring it here, so the
+    expectation and the fixture a run was measured over cannot drift
+    apart.
+    """
+    expected = ExpectedType()
     chosen = cells_module.load_cells(work)
-    # The scorer checks for the value the generator says it produced, so
-    # the fixture and the expectation cannot drift apart.
-    expected = write_fixture(work / "expected")
     print(report_module.report(work, chosen, expected))
     return 0
 

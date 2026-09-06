@@ -23,7 +23,7 @@ with a later one, which is what the archive is for.
 Regeneration is therefore a deliberate act that shows up as a diff:
 
     uv sync --group fixtures
-    uv run python fixtures/questions.py generate
+    uv run python -m retrieval_failures.fixtures.questions generate
 
 Reading is not. ``load()`` is stdlib-only and imports no model client,
 so nothing on the measurement path depends on a model being reachable.
@@ -37,11 +37,8 @@ import dataclasses
 import hashlib
 import json
 import pathlib
-import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-
-import corpus  # noqa: E402  -- sibling fixture, loaded by path
+from . import corpus
 
 #: Beside the generator, so the two travel together.
 QUESTIONS_JSON = pathlib.Path(__file__).resolve().parent / "questions.json"
@@ -113,8 +110,8 @@ class NoQuestionsFile(Exception):
     def __init__(self, path: pathlib.Path):
         self.path = path
         super().__init__(
-            f"{path} does not exist; run "
-            "'uv run python fixtures/questions.py generate' to create it"
+            f"{path} does not exist; run 'uv run python -m "
+            "retrieval_failures.fixtures.questions generate' to create it"
         )
 
 
