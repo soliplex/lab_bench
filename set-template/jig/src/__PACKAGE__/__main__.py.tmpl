@@ -28,14 +28,30 @@ from soliplex_lab_harness import preconditions
 from . import cells as cells_module
 from . import report as report_module
 from . import verify_assumptions
-from .fixture import write_fixture
+from .fixtures import ExpectedType
 
 
 def do_report(work: pathlib.Path) -> int:
+    """Score what has been recorded.
+
+    What a trial is scored *against* comes from this set's fixtures, and
+    its shape is this set's decision, not the scaffold's: import the
+    generator module(s) -- 'from .fixtures import <name>' -- and ask,
+    then pass the result(s) to construct an instance of 'Expected' type,
+    to be passed to 'report'.
+
+    One set's expectation is a single string derived from its data;
+    another's is per question, or per cell. There is no default here
+    that would be right for both, so there is none.
+
+    Derive it from the generator(s) rather than declaring it here, so the
+    expectation and the fixture a run was measured over cannot drift
+    apart.
+    """
+    expected = ExpectedType(
+        # Pass whatever arguments are needed by the type
+    )
     chosen = cells_module.load_cells(work)
-    # The scorer checks for the value the generator says it produced, so
-    # the fixture and the expectation cannot drift apart.
-    expected = write_fixture(work / "expected")
     print(report_module.report(work, chosen, expected))
     return 0
 

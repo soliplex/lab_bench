@@ -359,6 +359,12 @@ Commit:
 - the report
 - a *sample* raw message history, when one is illustrative
 
+A generator lives *inside* the jig package, as
+`src/<package>/fixtures/<name>.py`, and is imported like any other
+module. Where it lives is a separate question from whether it may be
+committed, and conflating the two is what once put generators outside
+the package and reached them by path.
+
 Do not commit:
 
 - built virtualenvs, sandbox environment builds, RAG databases

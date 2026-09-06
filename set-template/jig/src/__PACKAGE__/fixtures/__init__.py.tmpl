@@ -1,0 +1,33 @@
+"""This set's fixture generators, and the type of what they produce.
+
+A generator is an ordinary module in this package, imported like any
+other:
+
+    from .fixtures import <name>
+
+    expected = <name>.write(destination)
+
+What is committed is the generator and its seed, never the fixture it
+writes -- see PRAXIS.md, "What to commit".
+
+**No generator is defined here, deliberately.** What one exposes is this
+set's decision: how many there are, whether they are independent, and
+whether the value a scorer checks is a single string at all. A stub here
+would be a claim about all three, inherited by every set before anyone
+knows whether it is true of this one.
+
+'ExpectedType' is the one thing this package does declare, and it names
+that contract rather than implementing it: the type of the value a
+scorer checks a trial against. The scaffold defines it as 'type(None)'
+-- nothing yet -- so a set that has not decided says so in the type
+system instead of guessing at 'str'. Redefine it when the generator that
+produces the value exists, and '__main__' and 'report' follow without
+further edits.
+
+Nothing is imported here. A generator is also runnable as
+'python -m __PACKAGE__.fixtures.<name>', and importing one at package
+level would make that execute it twice: once as a submodule of this
+package, once as '__main__'.
+"""
+
+ExpectedType = type(None)
