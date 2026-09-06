@@ -124,9 +124,7 @@ def do_verify_assumptions(
 
 def do_report(work: pathlib.Path) -> int:
     matrix = cells_module.load_matrix(work)
-    # Write the orders CSV to a throwaway location in order to derive
-    # the scalar 'expected': `report.report` then verifies it.
-    expected = orders.write(work / "expected")
+    expected = orders.expected()
     print(report_module.report(work, matrix, expected))
     return 0
 

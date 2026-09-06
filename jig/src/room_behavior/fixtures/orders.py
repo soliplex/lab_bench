@@ -59,6 +59,35 @@ def rows() -> list[dict[str, object]]:
     return out
 
 
+def expected(data: list[dict[str, object]] | None = None) -> str:
+    """The Southeast total for the data task, without writing anything.
+
+    Computed from the rows rather than declared, so the value a run is
+    scored against cannot drift from the fixture it was measured over.
+    'EXPECTED_SOUTHEAST_TOTAL' is what this is checked against, not
+    where it comes from.
+
+    A caller that has already built the rows passes them, so the number
+    it gets back is the one for the data it holds.
+
+    Raises 'FixtureDrifted' rather than returning a total the archive
+    was not scored against. The check lives here because every caller
+    that needs the number needs it to be that one -- scoring a report
+    against a silently changed total is the failure this guards.
+    """
+    if data is None:
+        data = rows()
+    total = sum(
+        float(row["amount"])
+        for row in data
+        if row["region"] == "Southeast"
+    )
+    produced = f"{total:.2f}"
+    if produced != EXPECTED_SOUTHEAST_TOTAL:
+        raise FixtureDrifted(produced, EXPECTED_SOUTHEAST_TOTAL)
+    return produced
+
+
 def write(destination: pathlib.Path) -> str:
     """Write 'orders.csv' under ``destination``; return the expected total."""
     destination.mkdir(parents=True, exist_ok=True)
@@ -69,12 +98,7 @@ def write(destination: pathlib.Path) -> str:
         writer = csv.DictWriter(handle, fieldnames=list(data[0]))
         writer.writeheader()
         writer.writerows(data)
-    total = sum(
-        float(row["amount"])
-        for row in data
-        if row["region"] == "Southeast"
-    )
-    return f"{total:.2f}"
+    return expected(data)
 
 
 def main() -> None:
@@ -84,8 +108,6 @@ def main() -> None:
     total = write(args.destination)
     print(f"wrote {args.destination / 'orders.csv'}")
     print(f"Southeast total: {total}")
-    if total != EXPECTED_SOUTHEAST_TOTAL:
-        raise FixtureDrifted(total, EXPECTED_SOUTHEAST_TOTAL)
 
 
 if __name__ == "__main__":
