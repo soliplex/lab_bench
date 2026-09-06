@@ -17,10 +17,14 @@ run would invalidate every comparison against it.
 
 Run it standalone:
 
-    uv run python fixtures/corpus.py docs-skill <destination>
-    uv run python fixtures/corpus.py synthetic  <destination>
-    uv run python fixtures/corpus.py docs-skill x --list
-    uv run python fixtures/corpus.py docs-skill x --count installation
+    uv run python -m retrieval_failures.fixtures.corpus \
+        docs-skill <destination>
+    uv run python -m retrieval_failures.fixtures.corpus \
+        synthetic  <destination>
+    uv run python -m retrieval_failures.fixtures.corpus \
+        docs-skill x --list
+    uv run python -m retrieval_failures.fixtures.corpus \
+        docs-skill x --count installation
 """
 
 from __future__ import annotations
@@ -36,6 +40,8 @@ import shutil
 import tarfile
 import tempfile
 import urllib.request
+
+from .. import cells
 
 #: The pinned release the ``docs-skill`` corpus comes from.
 DOCS_SKILL_VERSION = "v0.78.1"
@@ -360,9 +366,7 @@ def main() -> None:
     parser.add_argument(
         "--config",
         type=pathlib.Path,
-        default=pathlib.Path(__file__).resolve().parents[1]
-        / "installation"
-        / "haiku.rag.yaml",
+        default=cells.jig_root() / "installation" / "haiku.rag.yaml",
     )
     parser.add_argument(
         "--cache",
