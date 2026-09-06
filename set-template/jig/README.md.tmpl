@@ -61,3 +61,7 @@ the reason these are assertions rather than notes.
 
 REPLACE ME: the generator, its seed, and the expected value a scorer
 checks for. Commit the generator, never the generated fixture.
+
+Generators live in `src/__PACKAGE__/fixtures/`, one module each, and are
+imported like any other module in the package. What a generator exposes
+is this set's decision -- see that package's docstring.

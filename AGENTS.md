@@ -93,6 +93,10 @@ branch landed in a `jig/` commit and had to be amended out.
 
 ### Tidying up
 
+- When a pull request merges, pull the worktree it targeted: `set-<name>/`
+  for a `jig/` or `docs/` one, `main/` for a `praxis/` one. The next branch
+  is cut from that worktree, so a stale one silently starts behind and its
+  pull request arrives carrying a merge.
 - When a transient branch (`praxis/`, `jig/`, `docs/`) is deleted on
   `origin` after its pull request merges, delete its worktree.
 - When an experiment's issue is closed, delete the experiment worktree **and
@@ -100,7 +104,7 @@ branch landed in a `jig/` commit and had to be amended out.
   protected against deletion; a local copy is just a second thing to keep
   straight.
 
-Neither cleanup touches the archive.
+Neither deletion touches the archive.
 
 ## Issues
 
