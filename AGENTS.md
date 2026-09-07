@@ -51,6 +51,13 @@ are committing a jig to `main`.
 already holding its rendered `SET.md`, and it cannot be deleted
 afterwards.
 
+**A proposal says what was measured on the originating material**, per
+phenomenon, or says plainly that nothing was -- which then bounds what it
+may claim. Do not write a mechanism into a proposal as though it were
+established: acceptance renders that sentence into `SET.md` on a branch
+that cannot be force-pushed. Where the material cannot come here, carry
+the finding as aggregates.
+
 **`SET.md` is the set's record, not its issue.** It carries the
 phenomenon, why the set needs apparatus, the cost and the preconditions,
 plus an `Amendments` section for scope decisions as they land. Amend it by

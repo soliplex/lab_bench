@@ -24,6 +24,8 @@ import issue_form
 # heading in the form -> heading in the file. Order is the file's order.
 SECTIONS = (
     ("The phenomenon", "The phenomenon"),
+    ("What was measured on the originating material",
+     "What was measured on the originating material"),
     ("Why it deserves apparatus of its own",
      "Why it deserves apparatus of its own"),
     ("What it would cost", "What it would cost"),
