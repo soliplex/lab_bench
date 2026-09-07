@@ -259,16 +259,34 @@ with no recent comments is not neglected work -- it is the same shape as a
 | `status:proposed` | filed, not yet accepted |
 | `status:accepted` | accepted; the branch and label exist |
 | `status:declined` | not being run |
+| `status:retired` | was accepted; no longer being pursued |
 
 These derive from no branch -- they say where a proposal stands, not what
 kind of work it is -- so they are a separate namespace and the rule above
 does not reach them. A pending proposal carries `status:proposed`, and
-exactly one of the other two ever replaces it.
+either `status:accepted` or `status:declined` replaces it.
 
 Adding a named label is better than removing one: dropping
 `status:proposed` is a stray click, while adding `status:accepted` is a
-choice among three named outcomes, and the workflow can refuse unless
+choice among named outcomes, and the workflow can refuse unless
 `status:proposed` was actually there.
+
+**`status:retired` is the only one that lands after a set exists.** The
+other three decide whether it will; this one says the answer stopped being
+interesting, or stopped being right. It is not `status:declined`, which
+means no branch and no labels were ever made -- a retired set has a branch,
+usually a jig, and sometimes results.
+
+Retiring changes nothing but the label. The branch stays, because it cannot
+be deleted and because it is the archive. The `set:`, `jig:` and `exp:`
+labels stay, so the set's history remains a label query like any other.
+Nothing is tidied away.
+
+What retiring obliges is a **terminal amendment on `SET.md`** saying why,
+dated like every other entry. The label is the index; the file is the
+record -- the same split as everywhere else here. A reader who finds the
+branch years later should not have to infer from silence why nobody
+continued.
 
 ### And a third, saying which kind of proposal it is
 

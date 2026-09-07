@@ -58,6 +58,13 @@ established: acceptance renders that sentence into `SET.md` on a branch
 that cannot be force-pushed. Where the material cannot come here, carry
 the finding as aggregates.
 
+**A set that is no longer being pursued is labelled `status:retired`**, on
+its hub issue, with a dated terminal amendment on `SET.md` saying why.
+Retiring changes nothing else: the branch stays -- deleting it is the one
+irreversible mistake available here -- and so do the `set:`, `jig:` and
+`exp:` labels, so its history stays queryable. Do not close the set's
+issue, and do not tidy anything away.
+
 **`SET.md` is the set's record, not its issue.** It carries the
 phenomenon, why the set needs apparatus, the cost and the preconditions,
 plus an `Amendments` section for scope decisions as they land. Amend it by
