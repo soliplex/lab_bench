@@ -141,7 +141,78 @@ Two things follow. The corpus-size pressure that arm created is gone.
 And the determinism measured for exact search holds for the corpora this
 set will use, without a "re-check under ANN" caveat.
 
+### 2026-09-06
+
+Both phenomena were measured against the corpora their reports came from,
+per [#60]. This back-fills what [#59] later added to the praxis: a set
+proposal states what was measured on the originating material. For this
+set, nothing had been.
+
+That material is customer-derived and stays out of this repository. The
+figures below are aggregates taken from it.
+
+**"A hub crowds the right chunks out" does not describe what happened.**
+The charter says one document carries a very high incidence of the
+identifier and very little information. In the corpus the report was filed
+against, the document that report names holds 2 of the 1,248 chunks
+containing the identifier, and ranks 55th among the 148 documents that
+contain it at all. The document holding the most, 239, is one a correct
+answer would cite. Counting the identifier per document does not find the
+offending document. It finds the right ones.
+
+The effect the report describes is real, and it reproduces. Taking 84
+questions that do not mention the identifier and asking each twice -- once
+plain, once with the identifier prefixed -- the prefix replaces more than
+half of the top twenty results: overlap between the two result sets is
+0.43, and the first result changes for 40 of the 84 questions. The document
+the report names appears in the top twenty for two of them.
+
+**The prefix changes the question, not the corpus.** Adding the identifier
+moves the query itself: the query's similarity to the identifier standing
+alone rises from 0.075 to 0.363. What then fills the results are chunks of
+two to five words consisting of little but the identifier. There are 74 of
+them. Removing every one changes the overlap only from 0.43 to 0.46,
+because the next chunks up are of the same kind. The failure is on the
+query side, and cleaning the corpus does not reach it.
+
+**"A uniquely correct document loses" holds, and is a failure of recall.**
+In that report's corpus the answer occupies exactly one chunk. Searched
+against the whole corpus it comes back 68th, so a model shown a handful of
+results never receives it. Searched against only the document it belongs
+to, it comes back 2nd -- which is why restricting retrieval to that
+document produces the right answer, as the report found. What outranks it
+is accurate and on-topic: text answering a closely related question rather
+than the one asked. Nothing in that corpus is misleading or junk.
+
+**Why this set is being retired rather than repaired.**
+
+The mechanism above is falsified. The corpus this set proposed to build --
+a planted roster repeating the identifier -- would have reproduced
+something else. The precondition asking that the identifier's density match
+the real corpus resolves to 0.0016, a figure confirming the effect is
+absent rather than present. And the reason given for holding both
+phenomena in one set, that a mitigation for one would hurt the other, is
+not supported: they fail on opposite sides of the search. What survives is
+that measuring either needs retrieval-level apparatus, which no existing
+set has.
+
+That is most of the charter, and a charter is a subject. These two
+phenomena now look like two subjects, and neither is the one this set was
+named for. Amending further would leave a reader working out the live scope
+by comparing the body against its amendments, which is a poorer record than
+an honest ending.
+
+The measurements stand on their own, and are the useful output of the work.
+A later proposal for either phenomenon begins from them, which is what
+[#59] now requires of one.
+
+These measurements cover dense retrieval only: no keyword or hybrid search,
+no reranking, and no scoring of the answers themselves. One corpus and one
+embedding model per phenomenon.
+
 [#27]: https://github.com/soliplex/lab_bench/issues/27
 [#36]: https://github.com/soliplex/lab_bench/issues/36
 [#37]: https://github.com/soliplex/lab_bench/issues/37
+[#59]: https://github.com/soliplex/lab_bench/issues/59
+[#60]: https://github.com/soliplex/lab_bench/issues/60
 [haiku.rag#592]: https://github.com/ggozad/haiku.rag/issues/592
