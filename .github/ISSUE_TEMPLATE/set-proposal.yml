@@ -57,6 +57,22 @@ body:
     validations:
       required: true
   - type: textarea
+    id: measured
+    attributes:
+      label: What was measured on the originating material
+      description: >
+        Per phenomenon: what you measured on the corpus, installation or
+        data the report came from, and what the result was. Answer "nothing
+        was measured" if that is the case -- it is legitimate, and it bounds
+        what the rest of this proposal may claim. What you may not do is
+        state a mechanism as established when it was inferred: acceptance
+        renders it into `SET.md` on a branch that cannot be force-pushed.
+        Where the material cannot be committed here, carry the finding as
+        aggregates -- a rate, a rank, a count -- the way a resolved commit
+        sha travels without its tree.
+    validations:
+      required: true
+  - type: textarea
     id: why-apparatus
     attributes:
       label: Why it deserves apparatus of its own

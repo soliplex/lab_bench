@@ -145,6 +145,27 @@ container when the proposal is accepted:
    apparatus, what it would cost. Start in a discussion and promote it here
    once the scope has settled -- nothing is lost when a discussion ends in
    no set.
+
+   **What settles a scope is a measurement.** The proposal states, per
+   phenomenon, what was measured on the material the report came from and
+   what the result was -- or states plainly that nothing was measured, which
+   then bounds what the proposal may claim. "Nothing was measured" stays a
+   legitimate answer; a set can be worth building on a report alone. What a
+   proposal may not do is carry an unlabelled mechanism into `SET.md`, where
+   acceptance makes it archival and irreversible.
+
+   This is the proposal-stage form of the rule for running an experiment:
+   print the state the hypothesis depends on before spending anything on it.
+   A set whose phenomenon has never been measured can spend a whole jig
+   producing confident results about a mechanism that was not there -- and
+   unlike a bad cell, nothing downstream catches it, because the apparatus
+   was built to the wrong spec.
+
+   Where the originating material cannot be committed here -- a customer
+   corpus, usually -- the finding still travels as aggregates. That is the
+   same move as recording a resolved commit sha rather than the tree it came
+   from: the number is publishable even when the thing it was taken from is
+   not.
 2. **Acceptance is adding `status:accepted`.** A workflow creates
    `set/<name>` already pointing at its scaffold commit, renders the
    proposal's fields into `SET.md` on that branch, mints all three of the
